@@ -133,11 +133,11 @@ function Vector(x, y) {
  * @param {Object}  velocity - The velocity of the cannon movement as vector.
  * @param {Object}  aliens - The aliens object containing all aliens.
  */
-function Cannon(position, velocity, aliens) {
+function Cannon(position, velocity, aliens, cities) {
     this.position           = position  || new Vector();
     this.velocity           = velocity  || new Vector(1,1);
     this.aliens             = aliens;
-    this.missiles           = new Missiles(aliens);
+    this.missiles           = new Missiles(aliens, cities);
     this.cannonWidth        = 45;
     this.cannonHeight       = 25;
     this.shouldBeRemoved    = false;
@@ -255,6 +255,8 @@ Cannon.prototype = {
             var gunPosX = this.position.x + 22;
             var gunPosY = this.position.y - 32;
             this.missiles.fire(new Vector(gunPosX, gunPosY), new Vector(4, 4));
+            this.cannonMissile.pause();
+            this.cannonMissile.currentTime = 0;
             this.cannonMissile.play();
         }
     },
@@ -331,10 +333,11 @@ Cannon.prototype = {
  * @param {Object}  velocity - The velocity of the missile movement as vector.
  * @param {Object}  aliens - The aliens object containing all aliens.
  */
-function Missile(position, velocity, aliens) {
+function Missile(position, velocity, aliens, cities) {
     this.position           = position  || new Vector();
     this.velocity           = velocity  || new Vector(1,1);
     this.aliens             = aliens;
+    this.cities             = cities;
     this.width              = 3;
     this.height             = 5;
     this.shouldBeRemoved    = false;
@@ -392,6 +395,10 @@ Missile.prototype = {
         if (this.aliens.aliensHit(this.position)) {
             this.shouldBeRemoved = true;
         }
+
+        if (this.cities.missileHitsCities(this)) {
+            this.shouldBeRemoved = true;
+        }
     },
 
     /**
@@ -413,8 +420,9 @@ Missile.prototype = {
  *
  * @param {Object}  aliens - Contains all aliens.
  */
-function Missiles(aliens) {
+function Missiles(aliens, cities) {
     this.aliens = aliens;
+    this.cities = cities;
     this.missiles = [];
     this.airExplosions = [];
     this.airExplosion = new Audio("../sound/air_explosion.wav");
@@ -455,7 +463,7 @@ Missiles.prototype = {
      * @return {void}
      */
     fire: function(position, velocity) {
-        this.missiles.push(new Missile(position, velocity, this.aliens));
+        this.missiles.push(new Missile(position, velocity, this.aliens, this.cities));
     },
 
     /**
@@ -1201,10 +1209,162 @@ AirExplosion.prototype = {
 };
 
 /**
+ * The city the cannon should defend.
+ *
+ * @param {Object}  position - The vector position for the cannon.
+ * @param {Object}  velocity - The velocity of the cannon movement as vector.
+ * @param {Object}  aliens - The aliens object containing all aliens.
+ */
+function City(ct, position) {
+    this.ct         = ct;
+    this.position   = position  || new Vector();
+    this.width      = 80;
+    this.height     = 55;
+}
+
+/**
+ * The prototype of the city describing the characteristics of the city.
+ *
+ * @type {Object}
+ */
+City.prototype = {
+
+    /**
+     * Draws the cannon in a normal state and after the cannon has been hit by
+     * aliens.
+     *
+     * @param  {Object}  ct - The canvas context.
+     *
+     * @return {void}
+     */
+    draw: function() {
+        this.ct.save();
+        this.ct.fillStyle = "rgb(79, 255, 48)";
+        this.ct.strokeStyle = "rgb(79, 255, 48)";
+        this.ct.translate(this.position.x, this.position.y); // Move whole space cannon
+        this.ct.beginPath();
+
+        this.ct.moveTo(0, 0);
+        this.ct.lineTo(15, 0);
+        this.ct.quadraticCurveTo(15, -this.height/2, this.width/2, -this.height/2);
+        this.ct.quadraticCurveTo(this.width-15, -this.height/2, this.width-15, 0);
+        this.ct.lineTo(this.width, 0);
+        this.ct.lineTo(this.width, -this.height+15);
+        this.ct.quadraticCurveTo(this.width, -this.height, this.width-15, -this.height);
+        this.ct.lineTo(15, -this.height);
+        this.ct.quadraticCurveTo(0, -this.height, 0, -this.height+15);
+        this.ct.lineTo(0, 0);
+
+        this.ct.closePath();
+        this.ct.stroke();
+        this.ct.fill();
+        this.ct.restore();
+    },
+
+    generateDamage: function(x, y) {
+
+        this.ct.clearRect(x, y, 50, 50);
+        /*
+        x = Math.floor(x / 2) * 2;
+        y = Math.floor(y / 2) * 2;
+
+        console.log("X: " + x + ", Y: " + y);
+
+        this.ct.clearRect(x - 2, y - 2, 4, 4);
+        this.ct.clearRect(x + 2, y - 4, 2, 4);
+        this.ct.clearRect(x + 4, y, 2, 2);
+        this.ct.clearRect(x + 2, y + 2, 2, 2);
+        this.ct.clearRect(x - 4, y + 2, 2, 2);
+        this.ct.clearRect(x - 6, y, 2, 2);
+        this.ct.clearRect(x - 4, y - 4, 2, 2);
+        this.ct.clearRect(x - 2, y - 6, 2, 2);
+        */
+    },
+
+    missileHitsCity: function(missile) {
+        if (isIntersect(this.position.x, this.position.y - this.height, this.width, this.height, missile.position.x, missile.position.y, missile.width, missile.height)) {
+            var data = this.ct.getImageData(missile.position.x, missile.position.y, missile.width, 1);
+            if (data.data[1] !== 0) {
+                this.generateDamage(missile.position.x, missile.position.y);
+                return true;
+            }
+        } else {
+            return false;
+        }
+    },
+
+
+    /**
+     * Checks if the left, right or space key has been pressed to call respective
+     * function. Call the missile function to update the missile movement and to
+     * check if aliens has hit the cannon. Checks so the cannon stays in the areay.
+     *
+     * @param  {number}  width - The width of the cannon.
+     *
+     * @return {void}
+     */
+    update: function(td) {
+
+    },
+};
+
+function Cities(ct) {
+    this.cities = [];
+    var posX = 110;
+
+    for (var i = 0; i < 4; i++) {
+        this.cities.push(new City(ct, new Vector(posX, 580)));
+        posX += 200;
+    }
+}
+
+/**
+ * The beam prototype which controls all beams.
+ * @type {Object}
+ */
+Cities.prototype = {
+
+    /**
+     * Draws all beams.
+     *
+     * Draws all beams that is stored in an array.
+     *
+     * @param  {Object}  ct - The canvas context.
+     *
+     * @return {void}
+     */
+    draw: function(ct) {
+        for (var i = 0; i < this.cities.length; i++) {
+            this.cities[i].draw(ct);
+        }
+    },
+
+    missileHitsCities: function(missile) {
+        for (var i = 0; i < this.cities.length; i++) {
+            if (this.cities[i].missileHitsCity(missile)) {
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+    /**
+     * Updates all beams and removes a beam from the array if the beam
+     * should be removed.
+     *
+     * @return {void}
+     */
+    update: function() {
+
+    },
+};
+
+/**
  * The Space Invaders game.
  */
 window.SpaceInvaders = (function() {
-    var ct, cannon, lastGameTick, aliens, isCannonPresent, isAliensPresent, isGameOver, ground;
+    var ct, cannon, lastGameTick, aliens, isCannonPresent, isAliensPresent, isGameOver, ground, cities;
     var width, height;
 
     /**
@@ -1219,9 +1379,10 @@ window.SpaceInvaders = (function() {
         width = 900;
         height = 750;
         ct.lineWidth = 1;
+        cities = new Cities(ct);
         ground = new Grounds();
         aliens = new Aliens();
-        cannon = new Cannon(new Vector(width / 2, height-100), new Vector(3, 3), aliens);
+        cannon = new Cannon(new Vector(width / 2, height-100), new Vector(3, 3), aliens, cities);
         isCannonPresent = true;
         isAliensPresent = true;
         isGameOver = false;
@@ -1244,7 +1405,7 @@ window.SpaceInvaders = (function() {
 
         if (isCannonPresent && isAliensPresent) {
             cannon.update(td, width);
-            aliens.update();
+            //aliens.update();
         } else {
             isGameOver = true;
         }
@@ -1257,6 +1418,7 @@ window.SpaceInvaders = (function() {
      */
     var render = function() {
         ct.clearRect(0, 0, width, height);
+        cities.draw(ct);
         ground.draw(ct);
         cannon.draw(ct);
         aliens.draw(ct);
