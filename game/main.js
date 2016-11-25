@@ -859,6 +859,22 @@ Aliens.prototype = {
         }
 
         this.setDirection();
+
+        if (Math.random() < 0.03 && this.aliens.length > 0) {
+            var alien = this.aliens[Math.round(Math.random() * (this.aliens.length - 1))];
+
+	        for (var i = 0; i < this.aliens.length; i++) {
+                var alien_b = this.aliens[i];
+
+                if (isIntersect(alien.position.x, alien.position.y, alien.alienWidth, 100, alien_b.position.x, alien_b.position.y, alien_b.alienWidth, alien_b.alienHeight)) {
+                    alien = alien_b;
+                }
+            }
+
+            this.beams.fire(alien);
+        }
+
+
         if (this.beams) {
             this.beams.update();
         }
@@ -1061,7 +1077,6 @@ function Beams(cannon, aliens, cities) {
     this.cities = cities;
     this.beams = [];
     this.groundExplosions = [];
-    this.delay = 20;
     this.alienMissile = new Audio("../sound/alien_missile.wav");
     this.alienMissile.volume = 0.3;
     this.groundExplosion = new Audio("../sound/ground_explosion.wav");
@@ -1100,39 +1115,13 @@ Beams.prototype = {
      *
      * @return {void}
      */
-    fire: function() {
-        var shouldFire = false;
-
-        if (this.delay > 0) {
-            this.delay -= 1;
-        } else {
-            shouldFire = true;
-            this.delay = 20;
-        }
-
-        if (shouldFire) {
-            var alienNo = Guer.random(0, this.aliens.aliens.length - 1);
-
-            var allowedToFire = true;
-            for (var i = 0; i < this.aliens.aliens.length; i++) {
-                if (i !== alienNo) {
-                    if (isIntersectInXLed(this.aliens.aliens[alienNo].position.x, this.aliens.aliens[alienNo].alienWidth, this.aliens.aliens[i].position.x, this.aliens.aliens[i].alienWidth)) {
-                        if (this.aliens.aliens[alienNo].position.y < this.aliens.aliens[i].position.y) {
-                            allowedToFire = false;
-                        }
-                    }
-                }
-            }
-
-            if (allowedToFire) {
-                var beamPosX = this.aliens.aliens[alienNo].position.x + (this.aliens.aliens[alienNo].alienWidth / 2);
-                var beamPosY = this.aliens.aliens[alienNo].position.y + this.aliens.aliens[alienNo].alienHeight;
-                this.beams.push(new Beam(new Vector(beamPosX, beamPosY), new Vector(6, 6), this.cannon, this.aliens, this.cities));
-                this.alienMissile.pause();
-                this.alienMissile.currentTime = 0;
-                this.alienMissile.play();
-            }
-        }
+    fire: function(alien) {
+        var beamPosX = alien.position.x + (alien.alienWidth / 2);
+        var beamPosY = alien.position.y + alien.alienHeight;
+        this.beams.push(new Beam(new Vector(beamPosX, beamPosY), new Vector(6, 6), this.cannon, this.aliens, this.cities));
+        this.alienMissile.pause();
+        this.alienMissile.currentTime = 0;
+        this.alienMissile.play();
     },
 
     /**
@@ -1142,7 +1131,6 @@ Beams.prototype = {
      * @return {void}
      */
     update: function() {
-        this.fire();
         for (var i = this.beams.length -1; i >= 0; i--) {
             this.beams[i].update();
             if (this.beams[i].shouldBeRemoved) {
