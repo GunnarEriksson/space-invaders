@@ -7,28 +7,9 @@
 /*global Key */
 /*global requestAnimFrame */
 /*global SpaceInvaders */
-
-/**
- * Helper function to see if two vectors are intersecting
- *
- * @param  {number}  ax - The x-coordinate for the first object.
- * @param  {number}  ay - The y-coordinate for the first object.
- * @param  {number}  aw - The width of the first object.
- * @param  {number}  ah - The height of the first object.
- * @param  {number}  bx - The x-coordinate for the second object.
- * @param  {number}  by - The x-coordinate for the second object.
- * @param  {number}  bw - The width of the second object.
- * @param  {number}  bh - The height of the second object.
- *
- * @return {Boolean}  True if the objects intersects, false otherwise.
- */
-function isIntersect(ax, ay, aw, ah, bx, by, bw, bh) {
-    return ax < bx + bw && bx < ax + aw && ay < by + bh && by < ay + ah;
-}
-
-function isIntersectInXLed(ax, aw, bx, bw) {
-    return ax < bx + bw && bx < ax + aw;
-}
+/*global Intro */
+/*global GameOver */
+/*global isIntersect */
 
 /**
  * Shim layer, polyfill, for requestAnimationFrame with setTimeout fallback.
@@ -44,8 +25,6 @@ window.requestAnimFrame = (function() {
                window.setTimeout(callback, 1000 / 60);
             };
 })();
-
-
 
 /**
  * Shim layer, polyfill, for cancelAnimationFrame with setTimeout fallback.
@@ -111,6 +90,9 @@ window.Key = {
 window.addEventListener('keyup',   function(event) { Key.onKeyup(event); },   false);
 window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
 
+function Status(status) {
+    this.gameStatus = status;
+}
 
 
 /**
@@ -133,24 +115,29 @@ function Vector(x, y) {
  * @param {Object}  velocity - The velocity of the cannon movement as vector.
  * @param {Object}  aliens - The aliens object containing all aliens.
  */
-function Cannon(position, velocity, aliens, cities, mysteryShips) {
-    this.position           = position  || new Vector();
-    this.velocity           = velocity  || new Vector(1,1);
-    this.aliens             = aliens;
-    this.missiles           = new Missiles(aliens, cities, mysteryShips);
-    this.cannonWidth        = 45;
-    this.cannonHeight       = 25;
-    this.shouldBeRemoved    = false;
-    this.cannonExplosionPlayed = false;
+function Cannon(position, aliens, cities, mysteryShips) {
+    this.aliens                 = aliens;
+    this.missiles               = new Missiles(aliens, cities, mysteryShips);
+    this.position               = position;
+    this.velocity               = new Vector(4, 4);
+    this.cannonWidth            = 45;
+    this.cannonHeight           = 28;
+    this.shouldBeRemoved        = false;
+    this.cannonExplosionPlayed  = false;
+    this.explodedVersion        = 0;
 
-    aliens.createBeams(this);
-    this.cannonMissile = new Audio("../sound/cannon_missile.wav");
-    this.cannonMissile.volume = 0.3;
+    this.cannonImg              = new window.Image();
+    this.cannonImg.src          = "../img/game/cannon.png";
+    this.explodedCannonImg      = new window.Image();
+    this.explodedCannonImg.src  = "../img/game/cannon_exploded.png";
+    this.explodedCannon2Img     = new window.Image();
+    this.explodedCannon2Img.src = "../img/game/cannon_exploded2.png";
 
-    this.cannonExplosion = new Audio("../sound/cannon_explosion.wav");
+    this.cannonMissile          = new Audio("../sound/cannon_missile.wav");
+    this.cannonMissile.volume   = 0.3;
+
+    this.cannonExplosion        = new Audio("../sound/cannon_explosion.wav");
     this.cannonExplosion.volume = 0.3;
-
-
 }
 
 /**
@@ -159,7 +146,6 @@ function Cannon(position, velocity, aliens, cities, mysteryShips) {
  * @type {Object}
  */
 Cannon.prototype = {
-
     /**
      * Draws the cannon in a normal state and after the cannon has been hit by
      * aliens.
@@ -171,23 +157,8 @@ Cannon.prototype = {
     draw: function(ct) {
         if (!this.shouldBeRemoved) {
             ct.save();
-            ct.fillStyle = "rgb(79, 255, 48)";
-            ct.strokeStyle = "rgb(79, 255, 48)";
-            ct.translate(this.position.x, this.position.y); // Move whole space cannon
-            ct.beginPath();
-
-            ct.moveTo(0, 0);
-            ct.lineTo(this.cannonWidth, 0);
-            ct.lineTo(this.cannonWidth, -10);
-            ct.quadraticCurveTo(this.cannonWidth, -15, this.cannonWidth / 2, -15);
-            ct.quadraticCurveTo(0, -15, 0, -10);
-            ct.lineTo(0, 0);
-            ct.fillRect (18, -20, 11, 5);
-            ct.fillRect (21, -25, 5, 5);
-            ct.closePath();
-
-            ct.stroke();
-            ct.fill();
+            ct.translate(this.position.x, this.position.y);
+            ct.drawImage(this.cannonImg, 0, 0, this.cannonWidth, this.cannonHeight);
             ct.restore();
         } else {
             if (!this.cannonExplosionPlayed) {
@@ -196,27 +167,14 @@ Cannon.prototype = {
             }
 
             ct.save();
-            ct.fillStyle = "rgb(79, 255, 48)";
-            ct.strokeStyle = "rgb(79, 255, 48)";
-            ct.translate(this.position.x, this.position.y); // Move whole space cannon
-            ct.beginPath();
+            ct.translate(this.position.x, this.position.y);
+            this.explodedVersion = (this.explodedVersion + 1) % 20;
+            if (this.explodedVersion < 10) {
+                ct.drawImage(this.explodedCannonImg, 0, 0, this.cannonWidth, this.cannonHeight);
+            } else {
+                ct.drawImage(this.explodedCannon2Img, 0, 0, this.cannonWidth, this.cannonHeight);
+            }
 
-            ct.moveTo(0, 0);
-            ct.lineTo(this.cannonWidth, 0);
-            ct.lineTo(this.cannonWidth, -15);
-            ct.lineTo(40, -10);
-            ct.lineTo(30, -15);
-            ct.lineTo(20, -10);
-            ct.lineTo(0, -15);
-            ct.lineTo(0, 0);
-            ct.rotate(-20*Math.PI/180);
-            ct.fillRect (18, -13, 11, 5);
-            ct.rotate(25*Math.PI/180);
-            ct.fillRect (13, -27, 5, 5);
-            ct.closePath();
-
-            ct.stroke();
-            ct.fill();
             ct.restore();
         }
 
@@ -230,7 +188,9 @@ Cannon.prototype = {
      * @return {void}
      */
     moveLeft: function() {
-        this.position.x -= 1 * this.velocity.x;
+        if (!this.shouldBeRemoved) {
+            this.position.x -= 1 * this.velocity.x;
+        }
     },
 
     /**
@@ -240,7 +200,9 @@ Cannon.prototype = {
      * @return {void}
      */
     moveRight: function() {
-        this.position.x += 1 * this.velocity.x;
+        if (!this.shouldBeRemoved) {
+            this.position.x += 1 * this.velocity.x;
+        }
     },
 
     /**
@@ -251,9 +213,9 @@ Cannon.prototype = {
      * @return {void}
      */
     fire: function() {
-        if (this.missiles.missiles.length === 0) {
+        if (this.missiles.missiles.length === 0 && !this.shouldBeRemoved) {
             var gunPosX = this.position.x + 22;
-            var gunPosY = this.position.y - 32;
+            var gunPosY = this.position.y;
             this.missiles.fire(new Vector(gunPosX, gunPosY), new Vector(8, 8));
             this.cannonMissile.pause();
             this.cannonMissile.currentTime = 0;
@@ -326,6 +288,62 @@ Cannon.prototype = {
     }
 };
 
+function Cannons(aliens, cities, mysteryShips) {
+    this.aliens = aliens;
+    this.cities = cities;
+    this.mysteryShips = mysteryShips;
+    this.cannons = [];
+    this.cannonHit = false;
+    this.timer = 180;
+    aliens.createBeamsAndRays(this);
+}
+
+Cannons.prototype = {
+    start: function(width, height) {
+        this.cannons.push(new Cannon(new Vector(150, height-128), this.aliens, this.cities, this.mysteryShips));
+        this.cannons.push(new Cannon(new Vector(10, height-40), this.aliens, this.cities, this.mysteryShips));
+        this.cannons.push(new Cannon(new Vector(70, height-40), this.aliens, this.cities, this.mysteryShips));
+    },
+
+    draw: function(ct) {
+        for (var i = 0; i < this.cannons.length; i++) {
+            this.cannons[i].draw(ct);
+        }
+    },
+
+    update: function(td, width) {
+
+        if (this.cannons.length > 0) {
+            this.cannons[0].update(td, width);
+
+            if (this.cannons[0].shouldBeRemoved) {
+                this.timer--;
+                if (this.timer === 0) {
+                    this.cannons.shift();
+                    if (this.cannons.length > 1) {
+                        this.cannons[0].position.x = 150;
+                        this.cannons[0].position.y = 750-128;
+                        this.cannons[1].position.x = 10;
+                        this.cannons[1].position.y = 750-40;
+                    } else if (this.cannons.length > 0) {
+                        this.cannons[0].position.x = 150;
+                        this.cannons[0].position.y = 750-128;
+                    }
+                    this.timer = 180;
+                }
+            }
+        }
+    },
+
+    cannonsHit: function(beamPos) {
+        if (this.cannons.length > 0) {
+            return this.cannons[0].cannonHit(beamPos);
+        } else {
+            return false;
+        }
+    },
+};
+
 /**
  * The missile fired by cannon.
  *
@@ -365,12 +383,7 @@ Missile.prototype = {
         ct.fillStyle = "rgb(79, 255, 48)";
         ct.strokeStyle = "rgb(79, 255, 48)";
         ct.translate(this.position.x, this.position.y);
-        ct.beginPath();
         ct.fillRect (0, 0, this.width, this.height);
-        ct.closePath();
-
-        ct.stroke();
-        ct.fill();
         ct.restore();
     },
 
@@ -561,7 +574,6 @@ Alien.prototype = {
     draw: function(ct) {
         ct.save();
         ct.translate(this.position.x, this.position.y);
-        ct.beginPath();
 
         if (this.version === 0) {
             ct.drawImage(this.img, this.spritePosX, this.spritePosY, this.alienWidth, this.alienHeight, 0, 0, this.alienWidth, this.alienHeight);
@@ -569,8 +581,6 @@ Alien.prototype = {
             ct.drawImage(this.img, this.spritePosX2, this.spritePosY, this.alienWidth, this.alienHeight, 0, 0, this.alienWidth, this.alienHeight);
         }
 
-        ct.closePath();
-        ct.stroke();
         ct.restore();
     },
 
@@ -664,46 +674,17 @@ Alien.prototype = {
 function Aliens(cities, score) {
     this.cities = cities;
     this.score = score;
-    this.aliens = [];
-    this.explodedAliens = [];
-    this.aliensDirection = "left";
+    this.aliens = null;
+    this.explodedAliens = null;
+    this.aliensDirection = null;
     this.beams = null;
-    this.counter = 0;
-    this.speed = 40;
-    var posX = 200;
-    var posY = 150;
-    var alienNo = 0;
-    this.moveSoundVersion = 0;
+    this.rays = null;
+    this.counter = null;
+    this.speed = null;
+    this.moveSoundVersion = null;
     this.alienExplosion = new Audio("../sound/alien_explosion.wav");
     this.alienMoveSoundHigh = new Audio("../sound/alien_move_high.wav");
     this.alienMoveSoundLow = new Audio("../sound/alien_move_low.wav");
-
-    for (var i = 0; i < 11; i++) {
-        this.aliens[alienNo] = new Alien(new Vector(posX, posY), new Vector(0.4, 0.4), this.aliensDirection, 21, 24, 76, 31, 107, 30);
-        alienNo++;
-        posX += 50;
-    }
-    posY += 37;
-
-    for (var j = 0; j < 2; j++) {
-        posX = 198;
-        for (var k = 0; k < 11; k++) {
-            this.aliens[alienNo] = new Alien(new Vector(posX, posY), new Vector(0.4, 0.4), this.aliensDirection, 27, 24, 6, 31, 42, 20);
-            alienNo++;
-            posX += 50;
-        }
-        posY += 37;
-    }
-
-    for (var m = 0; m < 2; m++) {
-        posX = 196;
-        for (var n = 0; n < 11; n++) {
-            this.aliens[alienNo] = new Alien(new Vector(posX, posY), new Vector(0.4, 0.4), this.aliensDirection, 32, 24, 56, 5, 94, 10);
-            alienNo++;
-            posX += 50;
-        }
-        posY += 37;
-    }
 }
 
 /**
@@ -711,6 +692,50 @@ function Aliens(cities, score) {
  * @type {Object}
  */
 Aliens.prototype = {
+
+    start: function() {
+        var posX = 200;
+        var posY = 150;
+        var alienNo = 0;
+        this.aliens = [];
+        this.explodedAliens = [];
+        this.aliensDirection = "left";
+        this.counter = 0;
+        this.speed = 40;
+        this.moveSoundVersion = 0;
+        this.missileVersion = 0;
+
+        for (var i = 0; i < 11; i++) {
+            this.aliens[alienNo] = new Alien(new Vector(posX, posY), new Vector(0.4, 0.4), this.aliensDirection, 21, 24, 76, 31, 107, 30);
+            alienNo++;
+            posX += 50;
+        }
+        posY += 37;
+
+        for (var j = 0; j < 2; j++) {
+            posX = 198;
+            for (var k = 0; k < 11; k++) {
+                this.aliens[alienNo] = new Alien(new Vector(posX, posY), new Vector(0.4, 0.4), this.aliensDirection, 27, 24, 6, 31, 42, 20);
+                alienNo++;
+                posX += 50;
+            }
+            posY += 37;
+        }
+
+        for (var m = 0; m < 2; m++) {
+            posX = 196;
+            for (var n = 0; n < 11; n++) {
+                this.aliens[alienNo] = new Alien(new Vector(posX, posY), new Vector(0.4, 0.4), this.aliensDirection, 32, 24, 56, 5, 94, 10);
+                alienNo++;
+                posX += 50;
+            }
+            posY += 37;
+        }
+
+        this.beams.start();
+        this.rays.start();
+    },
+
     /**
      * Creates the beams fired by the aliens.
      *
@@ -718,8 +743,9 @@ Aliens.prototype = {
      *
      * @return {void}
      */
-    createBeams: function(cannon) {
-        this.beams = new Beams(cannon, this, this.cities);
+    createBeamsAndRays: function(cannons) {
+        this.beams = new Beams(cannons, this, this.cities);
+        this.rays = new Rays(cannons, this, this.cities);
     },
 
     /**
@@ -740,6 +766,10 @@ Aliens.prototype = {
 
         if (this.beams) {
             this.beams.draw(ct);
+        }
+
+        if (this.rays) {
+            this.rays.draw(ct);
         }
     },
 
@@ -863,15 +893,20 @@ Aliens.prototype = {
         if (Math.random() < 0.03 && this.aliens.length > 0) {
             var alien = this.aliens[Math.round(Math.random() * (this.aliens.length - 1))];
 
-	        for (var i = 0; i < this.aliens.length; i++) {
-                var alien_b = this.aliens[i];
+	        for (var j = 0; j < this.aliens.length; j++) {
+                var alien_b = this.aliens[j];
 
                 if (isIntersect(alien.position.x, alien.position.y, alien.alienWidth, 100, alien_b.position.x, alien_b.position.y, alien_b.alienWidth, alien_b.alienHeight)) {
                     alien = alien_b;
                 }
             }
 
-            this.beams.fire(alien);
+            this.missileVersion = (this.missileVersion + 1) % 8;
+            if (this.missileVersion === 0) {
+                this.rays.fire(alien);
+            } else {
+                this.beams.fire(alien);
+            }
         }
 
 
@@ -879,11 +914,15 @@ Aliens.prototype = {
             this.beams.update();
         }
 
-        for (var j = this.explodedAliens.length -1; j >= 0; j--) {
-            this.explodedAliens[j].update();
+        if (this.rays) {
+            this.rays.update();
+        }
 
-            if (this.explodedAliens[j].timer === 0) {
-                this.explodedAliens.splice(j, 1);
+        for (var k = this.explodedAliens.length -1; k >= 0; k--) {
+            this.explodedAliens[k].update();
+
+            if (this.explodedAliens[k].timer === 0) {
+                this.explodedAliens.splice(k, 1);
             }
         }
     },
@@ -910,11 +949,7 @@ ExplodedAlien.prototype = {
     draw: function(ct) {
         ct.save();
         ct.translate(this.position.x, this.position.y);
-        ct.beginPath();
         ct.drawImage(this.img, 0, 0, this.width, this.height);
-
-        ct.closePath();
-        ct.stroke();
         ct.restore();
     },
 
@@ -951,14 +986,8 @@ ExplodedMysteryShip.prototype = {
     draw: function(ct) {
         ct.save();
         ct.translate(this.position.x, this.position.y);
-        ct.beginPath();
         ct.drawImage(this.img, 0, 0, this.width, this.height);
-        ct.closePath();
-        ct.stroke();
-        ct.restore();
 
-        ct.save();
-        ct.translate(this.position.x, this.position.y);
         ct.font = "32px impact";
         ct.fillStyle = '#ff0000';
         ct.fillText(this.points, 0, 20, 100);
@@ -984,15 +1013,16 @@ ExplodedMysteryShip.prototype = {
  * @param {Object}  cannon - The cannon object containing the cannon.
  * @param {Object}  aliens - The aliens object containing all aliens.
  */
-function Beam(position, velocity, cannon, aliens, cities) {
+function Beam(position, velocity, cannons, aliens, cities) {
     this.position           = position  || new Vector();
     this.velocity           = velocity  || new Vector(1,1);
-    this.cannon             = cannon;
+    this.cannons            = cannons;
     this.aliens             = aliens;
     this.cities             = cities;
     this.width              = 3;
     this.height             = 5;
     this.shouldBeRemoved    = false;
+    this.cannonHit          = false;
 }
 
 /**
@@ -1014,12 +1044,7 @@ Beam.prototype = {
         ct.fillStyle = "rgb(255, 0, 0)";
         ct.strokeStyle = "rgb(255, 0, 0)";
         ct.translate(this.position.x, this.position.y);
-        ct.beginPath();
         ct.fillRect (0, 0, this.width, this.height);
-        ct.closePath();
-
-        ct.stroke();
-        ct.fill();
         ct.restore();
     },
 
@@ -1042,8 +1067,9 @@ Beam.prototype = {
     update: function() {
         this.moveDown();
         this.stayInArea();
-        if (this.cannon.cannonHit(this.position)) {
+        if (this.cannons.cannonsHit(this.position)) {
             this.shouldBeRemoved = true;
+            this.cannonHit = true;
         }
 
         if (this.cities.beamHitsCities(this)) {
@@ -1071,8 +1097,8 @@ Beam.prototype = {
  * @param {Object}  cannon - Contains cannon.
  * @param {Object}  aliens - Contains all aliens.
  */
-function Beams(cannon, aliens, cities) {
-    this.cannon = cannon;
+function Beams(cannons, aliens, cities) {
+    this.cannons = cannons;
     this.aliens = aliens;
     this.cities = cities;
     this.beams = [];
@@ -1087,6 +1113,10 @@ function Beams(cannon, aliens, cities) {
  * @type {Object}
  */
 Beams.prototype = {
+    start: function() {
+        this.beams = [];
+        this.groundExplosions = [];
+    },
 
     /**
      * Draws all beams.
@@ -1118,7 +1148,7 @@ Beams.prototype = {
     fire: function(alien) {
         var beamPosX = alien.position.x + (alien.alienWidth / 2);
         var beamPosY = alien.position.y + alien.alienHeight;
-        this.beams.push(new Beam(new Vector(beamPosX, beamPosY), new Vector(6, 6), this.cannon, this.aliens, this.cities));
+        this.beams.push(new Beam(new Vector(beamPosX, beamPosY), new Vector(6, 6), this.cannons, this.aliens, this.cities));
         this.alienMissile.pause();
         this.alienMissile.currentTime = 0;
         this.alienMissile.play();
@@ -1134,11 +1164,187 @@ Beams.prototype = {
         for (var i = this.beams.length -1; i >= 0; i--) {
             this.beams[i].update();
             if (this.beams[i].shouldBeRemoved) {
-                this.groundExplosions.push(new GroundExplosion(new Vector(this.beams[i].position.x, this.beams[i].position.y)));
-                this.groundExplosion.pause();
-                this.groundExplosion.currentTime = 0;
-                this.groundExplosion.play();
+                if (!this.beams[i].cannonHit) {
+                    this.groundExplosions.push(new GroundExplosion(new Vector(this.beams[i].position.x, this.beams[i].position.y)));
+                    this.groundExplosion.pause();
+                    this.groundExplosion.currentTime = 0;
+                    this.groundExplosion.play();
+                }
+
                 this.beams.splice(i, 1);
+            }
+        }
+
+        for (var j = this.groundExplosions.length -1; j >= 0; j--) {
+            this.groundExplosions[j].update();
+
+            if (this.groundExplosions[j].timer === 0) {
+                this.groundExplosions.splice(j, 1);
+            }
+        }
+    },
+};
+
+function Ray(position, velocity, cannons, aliens, cities) {
+    this.position           = position  || new Vector();
+    this.velocity           = velocity  || new Vector(1,1);
+    this.cannons            = cannons;
+    this.aliens             = aliens;
+    this.cities             = cities;
+    this.width              = 6;
+    this.height             = 11;
+    this.shouldBeRemoved    = false;
+    this.cannonHit          = false;
+
+    this.rayImg              = new window.Image();
+    this.rayImg.src          = "../img/game/ray.png";
+}
+
+/**
+ * The prototype of the beam describing the beam characteristics.
+ *
+ * @type {Object}
+ */
+Ray.prototype = {
+
+    /**
+     * Draws the beam as a red laser beam.
+     *
+     * @param  {Object}  ct - The canvas context.
+     *
+     * @return {void}
+     */
+    draw: function(ct) {
+        ct.save();
+        ct.translate(this.position.x, this.position.y);
+        ct.drawImage(this.rayImg, 0, 0, this.width, this.height);
+        ct.restore();
+    },
+
+    /**
+     * Moves the beam up with one pixel muliplied with the velocity.
+     * The velocity is used to determine the speed of the beam movement.
+     *
+     * @return {void}
+     */
+    moveDown: function() {
+        this.position.y += 1 * this.velocity.y;
+    },
+
+    /**
+     * Updates the beam movement and check if the beam has reached the
+     * bottom of the game board or has hit the gun.
+     *
+     * @return {void}
+     */
+    update: function() {
+        this.moveDown();
+        this.stayInArea();
+        if (this.cannons.cannonsHit(this.position)) {
+            this.shouldBeRemoved = true;
+            this.cannonHit = true;
+        }
+
+        if (this.cities.beamHitsCities(this)) {
+            this.shouldBeRemoved = true;
+        }
+    },
+
+    /**
+     * Checks if the beam has reached the bottom of the game board and then
+     * should be removed.
+     *
+     * @return {void}
+     */
+    stayInArea: function() {
+        if (this.position.y > 650 - this.height) {
+            this.shouldBeRemoved = true;
+        }
+    }
+};
+
+/**
+ * The beams object.
+ * Used to control all beams.
+ *
+ * @param {Object}  cannon - Contains cannon.
+ * @param {Object}  aliens - Contains all aliens.
+ */
+function Rays(cannons, aliens, cities) {
+    this.cannons = cannons;
+    this.aliens = aliens;
+    this.cities = cities;
+    this.rays = [];
+    this.groundExplosions = [];
+    this.alienRay = new Audio("../sound/alien_missile.wav");
+    this.alienRay.volume = 0.3;
+    this.groundExplosion = new Audio("../sound/ground_explosion.wav");
+}
+
+/**
+ * The beam prototype which controls all beams.
+ * @type {Object}
+ */
+Rays.prototype = {
+    start: function() {
+        this.rays = [];
+        this.groundExplosions = [];
+    },
+
+    /**
+     * Draws all beams.
+     *
+     * Draws all beams that is stored in an array.
+     *
+     * @param  {Object}  ct - The canvas context.
+     *
+     * @return {void}
+     */
+    draw: function(ct) {
+        for (var i = 0; i < this.rays.length; i++) {
+            this.rays[i].draw(ct);
+        }
+
+        for (var j = 0; j < this.groundExplosions.length; j++) {
+            this.groundExplosions[j].draw(ct);
+        }
+    },
+
+    /**
+     * Fires a beam by creating a beam and store the beam in the array
+     * of beams. The beams are fired with an delay and it is a randomly choosen
+     * alien that fires the beam. Only aliens without an another alien below
+     * could fire a beam.
+     *
+     * @return {void}
+     */
+    fire: function(alien) {
+        var rayPosX = alien.position.x + (alien.alienWidth / 2);
+        var rayPosY = alien.position.y + alien.alienHeight;
+        this.rays.push(new Ray(new Vector(rayPosX, rayPosY), new Vector(4, 4), this.cannons, this.aliens, this.cities));
+        this.alienRay.pause();
+        this.alienRay.currentTime = 0;
+        this.alienRay.play();
+    },
+
+    /**
+     * Updates all beams and removes a beam from the array if the beam
+     * should be removed.
+     *
+     * @return {void}
+     */
+    update: function() {
+        for (var i = this.rays.length -1; i >= 0; i--) {
+            this.rays[i].update();
+            if (this.rays[i].shouldBeRemoved) {
+                if (!this.rays[i].cannonHit) {
+                    this.groundExplosions.push(new GroundExplosion(new Vector(this.rays[i].position.x, this.rays[i].position.y)));
+                    this.groundExplosion.pause();
+                    this.groundExplosion.currentTime = 0;
+                    this.groundExplosion.play();
+                }
+
+                this.rays.splice(i, 1);
             }
         }
 
@@ -1172,11 +1378,7 @@ Ground.prototype = {
     draw: function(ct) {
         ct.save();
         ct.translate(this.position.x, this.position.y);
-        ct.beginPath();
         ct.drawImage(this.img, 0, 0, this.width, this.height);
-
-        ct.closePath();
-        ct.stroke();
         ct.restore();
     },
 };
@@ -1231,11 +1433,7 @@ GroundExplosion.prototype = {
     draw: function(ct) {
         ct.save();
         ct.translate(this.position.x-10, this.position.y - this.height + 2);
-        ct.beginPath();
         ct.drawImage(this.img, 0, 0, this.width, this.height);
-
-        ct.closePath();
-        ct.stroke();
         ct.restore();
     },
 
@@ -1271,11 +1469,7 @@ AirExplosion.prototype = {
     draw: function(ct) {
         ct.save();
         ct.translate(this.position.x-12, this.position.y);
-        ct.beginPath();
         ct.drawImage(this.img, 0, 0, this.width, this.height);
-
-        ct.closePath();
-        ct.stroke();
         ct.restore();
     },
 
@@ -1320,7 +1514,6 @@ City.prototype = {
      * @return {void}
      */
     draw: function() {
-        console.log("Draw city:" + this.ct);
         this.ct.save();
         this.ct.fillStyle = "rgb(79, 255, 48)";
         this.ct.strokeStyle = "rgb(79, 255, 48)";
@@ -1409,7 +1602,7 @@ Cities.prototype = {
      *
      * @return {void}
      */
-    init: function() {
+    start: function() {
         this.cityCanvas = document.createElement("canvas");
         this.cityCanvas.width = 900;
         this.cityCanvas.height = 55;
@@ -1476,10 +1669,7 @@ MysteryShip.prototype = {
     draw: function(ct) {
         ct.save();
         ct.translate(this.position.x, this.position.y);
-        ct.beginPath();
         ct.drawImage(this.img, 0, 0, this.width, this.height);
-        ct.closePath();
-        ct.stroke();
         ct.restore();
     },
 
@@ -1557,11 +1747,11 @@ MysteryShip.prototype = {
  */
 function MysteryShips(score) {
     this.score                  = score;
-    this.mysteryShips           = [];
-    this.explodedMysteryShips   = [];
-    this.aliensDirection        = "left";
-    this.timer                  = Guer.random(200, 500);
-    this.moveSoundVersion       = 0;
+    this.mysteryShips           = null;
+    this.explodedMysteryShips   = null;
+    this.aliensDirection        = null;
+    this.timer                  = null;
+    this.moveSoundVersion       = null;
     this.mysteryShipExplosion   = new Audio("../sound/alien_explosion.wav");
     this.shipMoveSound          = new Audio("../sound/ufo_highpitch.wav");
 }
@@ -1571,6 +1761,14 @@ function MysteryShips(score) {
  * @type {Object}
  */
 MysteryShips.prototype = {
+    start: function() {
+        this.mysteryShips           = [];
+        this.explodedMysteryShips   = [];
+        this.aliensDirection        = "left";
+        this.timer                  = Guer.random(200, 500);
+        this.moveSoundVersion       = 0;
+    },
+
     /**
      * Draws all aliens in the array and the beams.
      *
@@ -1664,10 +1862,14 @@ MysteryShips.prototype = {
 
 function Score() {
     this.highScore  = 0;
-    this.score      = 0;
+    this.score      = null;
 }
 
 Score.prototype = {
+    start: function() {
+        this.score = 0;
+    },
+
     /**
      * Draws all aliens in the array and the beams.
      *
@@ -1694,12 +1896,14 @@ Score.prototype = {
     }
 };
 
+
 /**
  * The Space Invaders game.
  */
 window.SpaceInvaders = (function() {
-    var ct, cannon, lastGameTick, aliens, isCannonPresent, isAliensPresent, isGameOver, ground, cities, mysteryShips, score;
+    var ct, cannons, lastGameTick, aliens, isCannonPresent, isAliensPresent, ground, cities, mysteryShips, score, intro;
     var width, height;
+    var gameOver, status, isNewGame;
 
     /**
      * Initiates the game.
@@ -1710,23 +1914,33 @@ window.SpaceInvaders = (function() {
     var init = function(canvas) {
         canvas = document.getElementById(canvas);
         ct = canvas.getContext('2d');
+        ct.lineWidth = 1;
         width = 900;
         height = 750;
+        status = new Status("intro");
+        intro = new Intro(canvas, status);
+        gameOver = new GameOver(canvas);
         score = new Score();
-        ct.lineWidth = 1;
         cities = new Cities(ct);
-        cities.init();
         ground = new Grounds();
         mysteryShips = new MysteryShips(score);
         aliens = new Aliens(cities, score);
-        cannon = new Cannon(new Vector(width / 2, height-100), new Vector(3, 3), aliens, cities, mysteryShips);
-        isCannonPresent = true;
-        isAliensPresent = true;
-        isGameOver = false;
+        cannons = new Cannons(aliens, cities, mysteryShips);
+        isNewGame = true;
 
 
         console.log('Init the game');
     };
+
+    var startGame = function() {
+        isCannonPresent = true;
+        isAliensPresent = true;
+        aliens.start();
+        score.start();
+        cities.start();
+        mysteryShips.start();
+        cannons.start(width, height);
+    }
 
     /**
      * Updates the game and check if the game is over or not.
@@ -1736,16 +1950,35 @@ window.SpaceInvaders = (function() {
      * @return {void}
      */
     var update = function(td) {
-        isCannonPresent = cannon.shouldBeRemoved === false ? true : false;
-        isAliensPresent = aliens.aliens.length > 0 ? true : false;
 
+        if (status.gameStatus === "game") {
+            if (isNewGame) {
+                startGame();
+                isNewGame = false;
+            }
 
-        if (isCannonPresent && isAliensPresent) {
-            cannon.update(td, width);
-            aliens.update();
-            mysteryShips.update();
-        } else {
-            isGameOver = true;
+            isCannonPresent = cannons.cannons.length > 0 ? true : false;
+            isAliensPresent = aliens.aliens.length > 0 ? true : false;
+
+            if (!isAliensPresent) {
+                aliens.start();
+            }
+
+            if (isCannonPresent) {
+                cannons.update(td, width);
+                if (cannons.timer === 180) {
+                    aliens.update();
+                    mysteryShips.update();
+                }
+            } else {
+                status.gameStatus = "gameOver";
+            }
+        } else if (status.gameStatus === "intro") {
+            intro.update();
+        } else if (status.gameStatus === "gameOver") {
+            isNewGame = true;
+            gameOver.init(score.score);
+            gameOver.update();
         }
     };
 
@@ -1756,30 +1989,21 @@ window.SpaceInvaders = (function() {
      */
     var render = function() {
         ct.clearRect(0, 0, width, height);
-        ct.drawImage(cities.cityCanvas, 0, 480);
-        ground.draw(ct);
-        mysteryShips.draw(ct);
-        cannon.draw(ct);
-        aliens.draw(ct);
-        score.draw(ct);
-
-        if (isGameOver) {
-            ct.save();
-            ct.translate(width / 2, 200);
-            ct.font = "60px impact";
-            if (isCannonPresent) {
-                ct.fillStyle = '#009900';
-                ct.fillText('Grattis!', -80, 0, 300);
-                ct.font = "36px impact";
-                ct.fillText('Du vann!', -80, 50, 300);
-            } else {
-                ct.fillStyle = '#FF0000';
-                ct.fillText('Tyvärr!', -80, 0, 300);
-                ct.font = "36px impact";
-                ct.fillText('Du förlorade!', -80, 50, 300);
-            }
-
-            ct.restore();
+        if (status.gameStatus === "game") {
+            ct.drawImage(cities.cityCanvas, 0, 480);
+            ground.draw(ct);
+            mysteryShips.draw(ct);
+            cannons.draw(ct);
+            aliens.draw(ct);
+            score.draw(ct);
+        } else if (status.gameStatus === "intro") {
+            intro.draw(ct);
+        } else if (status.gameStatus === "gameOver") {
+            ct.drawImage(cities.cityCanvas, 0, 480);
+            ground.draw(ct);
+            cannons.draw(ct);
+            score.draw(ct);
+            gameOver.draw(ct);
         }
     };
 

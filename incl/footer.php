@@ -45,6 +45,9 @@
 </footer>
 <script src="../../lib/jquery.js"></script>
 <script src="../js/guer.js"></script>
+<script src="../game/helper-functions.js"></script>
+<script src="../game/intro.js"></script>
+<script src="../game/game-over.js"></script>
 <script src="main.js"></script>
 </body>
 </html>
