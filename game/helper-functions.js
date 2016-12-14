@@ -1,3 +1,5 @@
+/*exported isIntersect, showTextLetterByLetter */
+
 /**
  * Helper function to see if two vectors are intersecting
  *
