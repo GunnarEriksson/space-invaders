@@ -1,5 +1,21 @@
+/**
+ * The explosion handler for missile explosions in the air and beam and ray
+ * explosions on the ground in the game.
+ *
+ * Draws an air and ground explosion. A timer determines how long the explosion
+ * should be shown.
+ *
+ */
+
 /*global Vector */
 
+/**
+ * The ground explosion constructor
+ *
+ * Sets the ground explosion specifications.
+ *
+ * @param {Object} position - the position of the explosion in x and y led.
+ */
 function GroundExplosion(position) {
     this.position           = position  || new Vector();
     this.width              = 18;
@@ -9,10 +25,16 @@ function GroundExplosion(position) {
     this.timer              = 15;
 }
 
+/**
+ * The prototype of the ground explosion describing the characteristics of the
+ * ground explosion.
+ *
+ * @type {Object}
+ */
 GroundExplosion.prototype = {
 
     /**
-     * Draws an alien by using an image.
+     * Draws a ground explosion by using an image.
      *
      * @param  {Object}  ct - The canvas context.
      *
@@ -36,6 +58,13 @@ GroundExplosion.prototype = {
     },
 };
 
+/**
+ * The air explosion constructor
+ *
+ * Sets the air explosion specifications.
+ *
+ * @param {Object} position - the position of the explosion in x and y led.
+ */
 function AirExplosion(position) {
     this.position           = position  || new Vector();
     this.width              = 24;
@@ -45,10 +74,16 @@ function AirExplosion(position) {
     this.timer              = 15;
 }
 
+ /**
+  * The prototype of the air explosion describing the characteristics of the
+  * air explosion.
+  *
+  * @type {Object}
+  */
 AirExplosion.prototype = {
 
     /**
-     * Draws an alien by using an image.
+     * Draws an air explosion by using an image.
      *
      * @param  {Object}  ct - The canvas context.
      *

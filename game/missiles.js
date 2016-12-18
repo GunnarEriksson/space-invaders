@@ -1,3 +1,9 @@
+/**
+ * The missiles handler in the game.
+ *
+ * Creates, removes and handles all missiles in the game.
+ */
+
 /*global AirExplosion */
 /*global Audio */
 /*global Missile */
@@ -5,10 +11,13 @@
 /*global isIntersect */
 
 /**
- * The missiles object.
- * Used to control all missiles.
+ * The missiles constructor.
  *
- * @param {Object}  aliens - Contains all aliens.
+ * Sets the beams specifications.
+ *
+ * @param {Object} aliens       - contains all aliens.
+ * @param {Object} cities       - contains all cities.
+ * @param {Object} mysteryShips - contains the mystery ship.
  */
 function Missiles(aliens, cities, mysteryShips) {
     this.aliens = aliens;
@@ -20,7 +29,8 @@ function Missiles(aliens, cities, mysteryShips) {
 }
 
 /**
- * The missiles prototype which controls all missiles.
+ * The prototype of the missiles describing the characteristics of the missiles.
+ *
  * @type {Object}
  */
 Missiles.prototype = {
@@ -49,8 +59,7 @@ Missiles.prototype = {
      * of missiles.
      *
      * @param  {Object}  position - The start vector of the missile.
-     * @param  {Object}  velocity - The velocity of the missile. Only y-coordinate
-     *                              is used.
+     *
      * @return {void}
      */
     fire: function(position) {
@@ -92,6 +101,11 @@ Missiles.prototype = {
         this.missileHitsRay();
     },
 
+    /**
+     * Checks if a missile hits a beam fired by an alien.
+     *
+     * @return {Void}
+     */
     missileHitsBeam: function() {
         var beams = this.aliens.beams.beams;
         for (var i = 0; i < this.missiles.length; i++) {
@@ -105,6 +119,10 @@ Missiles.prototype = {
         }
     },
 
+    /**
+     * Checks if a missile hits a ray fired by an alien.
+     * @return {[type]} [description]
+     */
     missileHitsRay: function() {
         var rays = this.aliens.rays.rays;
         for (var i = 0; i < this.missiles.length; i++) {

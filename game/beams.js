@@ -1,14 +1,22 @@
+/**
+ * The beams handler in the game.
+ *
+ * Creates, removes and handles all beams in the game.
+ */
+
 /*global Audio */
 /*global Beam */
 /*global GroundExplosion */
 /*global Vector */
 
 /**
- * The beams object.
- * Used to control all beams.
+ * The beams constructor.
+ *
+ * Sets the beams specifications.
  *
  * @param {Object}  cannon - Contains cannon.
  * @param {Object}  aliens - Contains all aliens.
+ * @param {Object}  cities - the object containing the cities.
  */
 function Beams(cannons, aliens, cities) {
     this.cannons = cannons;
@@ -22,7 +30,8 @@ function Beams(cannons, aliens, cities) {
 }
 
 /**
- * The beam prototype which controls all beams.
+ * The prototype of the beams describing the characteristics of the beams.
+ *
  * @type {Object}
  */
 Beams.prototype = {
@@ -58,6 +67,16 @@ Beams.prototype = {
      *
      * @return {void}
      */
+
+    /**
+     * Fires a beam by creating a beam and store the beam in the array
+     * of beams. The beams are fired with an delay and it is a randomly choosen
+     * alien that fires the beam. Only aliens without an another alien below
+     * could fire a beam.
+     *
+     * @param  {Objecy} alien - the alien object.
+     * @return {void}
+     */
     fire: function(alien) {
         var beamPosX = alien.position.x + (alien.alienWidth / 2);
         var beamPosY = alien.position.y + alien.alienHeight;
@@ -69,7 +88,7 @@ Beams.prototype = {
 
     /**
      * Updates all beams and removes a beam from the array if the beam
-     * should be removed.
+     * should be removed when hitting the cannon or the city.
      *
      * @return {void}
      */

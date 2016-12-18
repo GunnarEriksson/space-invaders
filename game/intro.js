@@ -1,6 +1,24 @@
+/**
+ * The intro handler in the game.
+ *
+ * Shows different aliens and the related points.
+ *
+ * Writes the text "NEW GAME" and "HIGH SCORE" with the possibility to choose
+ * one of the alternatives.
+ *
+ */
+
 /*global isIntersect */
 /*global showTextLetterByLetter */
 
+/**
+ * The intro constructor.
+ *
+ * Sets the intro specifications.
+ *
+ * @param {Object} canvas - the canvas to write the text on.
+ * @param {Object} status - the status of choosen alternatives (game or high score).
+ */
 function Intro(canvas, status) {
     this.canvas = canvas;
     this.status = status;
@@ -23,7 +41,20 @@ function Intro(canvas, status) {
     this.alienImg.src           = "../img/game/space_invaders.png";
 }
 
+/**
+ * The prototype of the intro describing the characteristics.
+ *
+ * @type {Object}
+ */
 Intro.prototype = {
+    /**
+     * Draws the aliens and the text letter by letter with a delay between the
+     * letters.
+     *
+     * @param  {Object}  ct - The canvas context.
+     *
+     * @return {Void}
+     */
     draw: function(ct) {
         ct.save();
         ct.translate(980 / 2, 200);
@@ -78,12 +109,25 @@ Intro.prototype = {
         ct.restore();
     },
 
+    /**
+     * Updates the timer, which is used to write the text letter by letter with
+     * delay.
+     *
+     * @return {Void}
+     */
     update: function() {
         if (this.timer <= 530) {
             this.timer++;
         }
     },
 
+    /**
+     * Checks if the text "PLAY GAME" is clicked to start a new game.
+     *
+     * @param  {Object} event  - the click event.
+     *
+     * @return {Void}
+     */
     checkStart: function(event) {
         var pos = this.getMousePos(event);
 
@@ -92,6 +136,14 @@ Intro.prototype = {
         }
     },
 
+    /**
+     * Checks if the mouse is moved and gets the position of the mouse on
+     * the canvas.
+     *
+     * @param  {Object} event - the mouse move event
+     *
+     * @return {Void}
+     */
     mouseMove: function(event) {
         var pos = this.getMousePos(event);
 
@@ -99,6 +151,13 @@ Intro.prototype = {
         this.hooverOverHighScore(pos.x, pos.y);
     },
 
+    /**
+     * Gets the mouse position on the canvas in x and y led.
+     *
+     * @param  {Object} event - the mouse move event.
+     *
+     * @return {Void}
+     */
     getMousePos: function(event) {
         var rect = this.canvas.getBoundingClientRect();
 
@@ -108,6 +167,14 @@ Intro.prototype = {
         };
     },
 
+    /**
+     * Checks if the mouse is hoovering over the text "HIGH SCORES".
+     *
+     * @param  {Integer} ax - the position in x led for the mouse on canvas.
+     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     *
+     * @return {Void}
+     */
     hooverOverStartGame: function(ax, ay) {
         if (isIntersect(ax, ay, 1, 1, 403, 560, 125, 20)) {
             this.isHoverOverStart = true;
@@ -116,6 +183,14 @@ Intro.prototype = {
         }
     },
 
+    /**
+     * Checks if the mouse is hoovering over the text "NEW GAME".
+     *
+     * @param  {Integer} ax - the position in x led for the mouse on canvas.
+     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     *
+     * @return {Void}
+     */
     hooverOverHighScore: function(ax, ay) {
         if (isIntersect(ax, ay, 1, 1, 390, 602, 160, 20)) {
             this.isHooverOverHighScore = true;

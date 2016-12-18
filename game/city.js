@@ -1,3 +1,14 @@
+/**
+ * The city handler in the game.
+ *
+ * Handles one alien in the game and is resposible for drawing, moving and checks
+ * if the alien has hit by a missile or if an aliens hits the cannon (game over).
+ *
+ * It also handles the image of an exploded alien when the alien has been hit
+ * by a missile from the cannon.
+ *
+ */
+
 /*global Vector */
 /*global isIntersect */
 
@@ -9,10 +20,12 @@
  * @param {Object}  aliens - The aliens object containing all aliens.
  */
 function City(ct, position) {
-    this.ct         = ct;
-    this.position   = position  || new Vector();
-    this.width      = 80;
-    this.height     = 51;
+    this.ct                 = ct;
+    this.position           = position  || new Vector();
+    this.width              = 80;
+    this.height             = 51;
+    this.canvasOffset       = 480;
+    this.canvasOffsetRay    = 469;
 }
 
 /**
@@ -23,12 +36,9 @@ function City(ct, position) {
 City.prototype = {
 
     /**
-     * Draws the cannon in a normal state and after the cannon has been hit by
-     * aliens.
+     * Draws a cannon.
      *
-     * @param  {Object}  ct - The canvas context.
-     *
-     * @return {void}
+     * @return {Void}
      */
     draw: function() {
         this.ct.save();
@@ -54,6 +64,14 @@ City.prototype = {
         this.ct.restore();
     },
 
+    /**
+     * Generates damage after the city is hit by a missile.
+     *
+     * @param  {Integer} x - the start position for the damage in x led.
+     * @param  {Integer} y - the start position for the damage in y led.
+     *
+     * @return {Void}
+     */
     generateMissileDamage: function(x, y) {
 
         x = Math.floor(x / 2) * 2;
@@ -68,6 +86,14 @@ City.prototype = {
         this.ct.clearRect(x - 6, y - 3, 2, 2);
     },
 
+    /**
+     * Generates damage after the city is hit by a beam.
+     *
+     * @param  {Integer} x - the start position for the damage in x led.
+     * @param  {Integer} y - the start position for the damage in y led.
+     *
+     * @return {Void}
+     */
     generateBeamDamage: function(x, y) {
 
         x = Math.floor(x / 2) * 2;
@@ -82,6 +108,14 @@ City.prototype = {
         this.ct.clearRect(x - 4, y + 3, 2, 2);
     },
 
+    /**
+     * Generates damage after the city is hit by a ray.
+     *
+     * @param  {Integer} x - the start position for the damage in x led.
+     * @param  {Integer} y - the start position for the damage in y led.
+     *
+     * @return {Void}
+     */
     generateRayDamage: function(x, y) {
 
         x = Math.floor(x / 2) * 2;
@@ -97,8 +131,16 @@ City.prototype = {
         this.ct.clearRect(x - 5, y - 3, 2, 2);
     },
 
+    /**
+     * Checks if an missile hits a non damaged part of a city. If the city is
+     * hit, a damage is generated.
+     *
+     * @param  {Object} missile - the missile object with the characteristics.
+     *
+     * @return {Void}
+     */
     missileHitsCity: function(missile) {
-        var missilePosY = missile.position.y - 480;
+        var missilePosY = missile.position.y - this.canvasOffset;
         if (isIntersect(this.position.x, this.position.y - this.height, this.width, this.height, missile.position.x, missilePosY, missile.width, missile.height)) {
             var data = this.ct.getImageData(missile.position.x, missilePosY, missile.width, 1);
             if (data.data[3] !== 0) {
@@ -110,8 +152,16 @@ City.prototype = {
         }
     },
 
+    /**
+     * Checks if an beam hits a non damaged part of a city. If the city is
+     * hit, a damage is generated.
+     *
+     * @param  {Object} beam - the beam object with the characteristics.
+     *
+     * @return {Void}
+     */
     beamHitsCity: function(beam) {
-        var beamPosY = beam.position.y - 480;
+        var beamPosY = beam.position.y - this.canvasOffset;
         if (isIntersect(this.position.x, this.position.y - this.height, this.width, this.height, beam.position.x, beamPosY, beam.width, beam.height)) {
             var data = this.ct.getImageData(beam.position.x, beamPosY, beam.width, 1);
             if (data.data[1] !== 0) {
@@ -123,8 +173,16 @@ City.prototype = {
         }
     },
 
+    /**
+     * Checks if an ray hits a non damaged part of a city. If the city is
+     * hit, a damage is generated.
+     *
+     * @param  {Object} ray - the ray object with the characteristics.
+     *
+     * @return {Void}
+     */
     rayHitsCity: function(ray) {
-        var rayPosY = ray.position.y - 469;
+        var rayPosY = ray.position.y - this.canvasOffsetRay;
         if (isIntersect(this.position.x, this.position.y - this.height, this.width, this.height, ray.position.x, rayPosY, ray.width, ray.height)) {
             var data = this.ct.getImageData(ray.position.x, rayPosY, ray.width, 1);
             if (data.data[1] !== 0) {

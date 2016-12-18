@@ -1,12 +1,23 @@
+/**
+ * The beam handler in the game.
+ *
+ * Handles one beam, fired by an alien, in the game and is resposible for
+ * drawing, moving and checks if the beam has hit the cannon or one of the
+ * cities and should then be removed.
+ *
+ */
+
 /*global Vector */
 
 /**
- * The beam fired by an alien.
+ * The beam constructor for the beam fired by an alien.
  *
- * @param {Object}  position - The vector position for the alien.
- * @param {Object}  velocity - The velocity of the beam movement as vector.
- * @param {Object}  cannon - The cannon object containing the cannon.
- * @param {Object}  aliens - The aliens object containing all aliens.
+ * Sets the beam specifications.
+ *
+ * @param {Object}  position    - the vector position for the alien in x and y led.
+ * @param {Object}  cannons     - the cannons object containing the cannon.
+ * @param {Object}  aliens      - the aliens object containing all aliens.
+ * @param {Object}  cities      - the object containing the cities.
  */
 function Beam(position, cannons, aliens, cities) {
     this.position           = position  || new Vector();
@@ -62,7 +73,7 @@ Beam.prototype = {
     update: function() {
         this.moveDown();
         this.stayInArea();
-        if (this.cannons.cannonsHit(this.position)) {
+        if (this.cannons.cannonsHit(this.position, this.width, this.height)) {
             this.shouldBeRemoved = true;
             this.cannonHit = true;
         }

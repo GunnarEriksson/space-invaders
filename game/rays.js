@@ -1,3 +1,9 @@
+/**
+ * The rays handler in the game.
+ *
+ * Creates, removes and handles all rays in the game fired by aliens.
+ */
+
 /*global Audio */
 /*global GroundExplosion */
 /*global Ray */
@@ -9,6 +15,15 @@
  *
  * @param {Object}  cannon - Contains cannon.
  * @param {Object}  aliens - Contains all aliens.
+ */
+/**
+ * The rays constructor.
+ *
+ * Sets the rays specifications.
+ *
+ * @param {Object} cannons  - the cannons object containing all cannons.
+ * @param {Object} aliens   - the aliens object containing all aliens.
+ * @param {Object} cities   - the cities object containing all cities.
  */
 function Rays(cannons, aliens, cities) {
     this.cannons = cannons;
@@ -22,7 +37,8 @@ function Rays(cannons, aliens, cities) {
 }
 
 /**
- * The beam prototype which controls all beams.
+ * The prototype of the rays describing the rays characteristics.
+ *
  * @type {Object}
  */
 Rays.prototype = {
@@ -32,9 +48,8 @@ Rays.prototype = {
     },
 
     /**
-     * Draws all beams.
-     *
-     * Draws all beams that is stored in an array.
+     * Draws all rays and the belonging ground explosion, if present in the
+     * arrays.
      *
      * @param  {Object}  ct - The canvas context.
      *
@@ -51,12 +66,12 @@ Rays.prototype = {
     },
 
     /**
-     * Fires a beam by creating a beam and store the beam in the array
-     * of beams. The beams are fired with an delay and it is a randomly choosen
-     * alien that fires the beam. Only aliens without an another alien below
-     * could fire a beam.
+     * Creates a ray which start point is in the middle bottom of the alien who
+     * fires the ray. Creats a sound when the ray is fired.
      *
-     * @return {void}
+     * @param  {Object} alien - the alien who fires the ray.
+     *
+     * @return {Void}
      */
     fire: function(alien) {
         var rayPosX = alien.position.x + ((alien.alienWidth / 2) - 3);
@@ -68,10 +83,12 @@ Rays.prototype = {
     },
 
     /**
-     * Updates all beams and removes a beam from the array if the beam
-     * should be removed.
+     * Updates the movement of the ray and checks if the ray should be removed.
+     * If the ray is removed, a ground explosion is created.
+     * Controls via a timer how long the ground explosion should be present before
+     * it is removed.
      *
-     * @return {void}
+     * @return {Void}
      */
     update: function() {
         for (var i = this.rays.length -1; i >= 0; i--) {

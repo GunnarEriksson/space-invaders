@@ -1,3 +1,12 @@
+/**
+ * The missile handler in the game.
+ *
+ * Handles one missile, fired by the cannon, in the game and is resposible for
+ * drawing, moving and checks if the missile has hit a ray, beam, alien or a
+ * city. Checks also if the missile has reached the top of the game board.
+ *
+ */
+
 /*global Vector */
 
 /**

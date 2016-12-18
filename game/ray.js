@@ -1,5 +1,24 @@
+/**
+ * The ray handler in the game.
+ *
+ * Handles one ray, fired by an alien, in the game and is resposible for
+ * drawing, moving and checks if the ray has hit the cannon or a city and
+ * then should be removed.
+ *
+ */
+
 /*global Vector */
 
+/**
+ * The ray constructor.
+ *
+ * Sets the ray specifications.
+ *
+ * @param {Object}  position    - the vector position for the ray in x and y led.
+ * @param {Object} cannons      - the cannons object containing all cannons.
+ * @param {Object} aliens       - the aliens object containing all aliens.
+ * @param {Object} cities       - the cities object containing all cities.
+ */
 function Ray(position, cannons, aliens, cities) {
     this.position           = position  || new Vector();
     this.cannons            = cannons;
@@ -16,14 +35,14 @@ function Ray(position, cannons, aliens, cities) {
 }
 
 /**
- * The prototype of the beam describing the beam characteristics.
+ * The prototype of the ray describing the ray characteristics.
  *
  * @type {Object}
  */
 Ray.prototype = {
 
     /**
-     * Draws the beam as a red laser beam.
+     * Draws the ray using an image.
      *
      * @param  {Object}  ct - The canvas context.
      *
@@ -37,8 +56,8 @@ Ray.prototype = {
     },
 
     /**
-     * Moves the beam up with one pixel muliplied with the velocity.
-     * The velocity is used to determine the speed of the beam movement.
+     * Moves the ray down with one pixel muliplied with the velocity.
+     * The velocity is used to determine the speed of the ray movement.
      *
      * @return {void}
      */
@@ -47,15 +66,15 @@ Ray.prototype = {
     },
 
     /**
-     * Updates the beam movement and check if the beam has reached the
-     * bottom of the game board or has hit the gun.
+     * Updates the ray movement and check if the beam has reached the
+     * bottom of the game board or has hit the gun or city.
      *
      * @return {void}
      */
     update: function() {
         this.moveDown();
         this.stayInArea();
-        if (this.cannons.cannonsHit(this.position)) {
+        if (this.cannons.cannonsHit(this.position, this.width, this.height)) {
             this.shouldBeRemoved = true;
             this.cannonHit = true;
         }

@@ -1,10 +1,31 @@
+/**
+ * The mystery ship handler in the game.
+ *
+ * Handles the drawing and movement of the myster ship that is shown at the
+ * top of the game board at irregular intervals. The ship could be started from
+ * the left or the right side of the game board.
+ *
+ * Shows the ship after the ship has been hit by a missile and the score for
+ * hitting the ship.
+ *
+ */
+
 /*global Vector */
 /*global isIntersect */
 
-function MysteryShip(position, velocity, direction) {
+/**
+ * The mystery ship constructor.
+ *
+ * Sets the mystery ship specifications for the mystery ship that is traveling at the
+ * top of the game board.
+ *
+ * @param {Object} position     - the position of the mystery ship in x and y led.
+ * @param {String} direction    - the direction of the mystery ship (left or right).
+ */
+function MysteryShip(position, direction) {
     this.position           = position  || new Vector();
-    this.velocity           = velocity  || new Vector(1,1);
     this.direction          = direction || "right";
+    this.velocity           = new Vector(3, 3);
     this.width              = 35;
     this.height             = 15;
     this.shouldBeRemoved    = false;
@@ -14,14 +35,15 @@ function MysteryShip(position, velocity, direction) {
 }
 
 /**
- * The prototype of the alien describing the characteristics of the alien.
+ * The prototype of the mystery ship describing the characteristics of the
+ * mystery ship.
  *
  * @type {Object}
  */
 MysteryShip.prototype = {
 
     /**
-     * Draws an alien by using an image.
+     * Draws the myster ship by using an image.
      *
      * @param  {Object}  ct - The canvas context.
      *
@@ -35,7 +57,7 @@ MysteryShip.prototype = {
     },
 
     /**
-     * Moves the alien to the left with one pixel muliplied with the velocity.
+     * Moves the mystery ship to the left with one pixel muliplied with the velocity.
      *
      * @return {void}
      */
@@ -44,7 +66,7 @@ MysteryShip.prototype = {
     },
 
     /**
-     * Moves the alien to the right with one pixel muliplied with the velocity.
+     * Moves the mystery ship to the right with one pixel muliplied with the velocity.
      *
      * @return {void}
      */
@@ -53,7 +75,8 @@ MysteryShip.prototype = {
     },
 
     /**
-     * Updates the movement of the alien and checks if the alien stays in the area.
+     * Updates the movement of the mystery ship and checks if the mystery ship
+     * stays in the area.
      *
      * @return {void}
      */
@@ -68,8 +91,8 @@ MysteryShip.prototype = {
     },
 
     /**
-     * Checks if the alien stays in the area by changing the direction of the
-     * alien when the alien has reached left or right border.
+     * Sets that the myster ship should be removed when reaching the left or
+     * right border on the game board.
      *
      * @return {void}
      */
@@ -102,6 +125,15 @@ MysteryShip.prototype = {
     },
 };
 
+/**
+ * The exploded mystery ship constructor.
+ *
+ * Sets the exploded mystery ship specifications for the exploded mystery ship
+ * when the mystery ship is hit by a missile fired by the cannon.
+ *
+ * @param {Object} position     - the position of the exploded mystery ship in x and y led.
+ * @param {Integer} direction   - the score for hitting the mystery ship.
+ */
 function ExplodedMysteryShip(position, points) {
     this.position           = position  || new Vector();
     this.points             = points;
@@ -112,10 +144,16 @@ function ExplodedMysteryShip(position, points) {
     this.timer              = 70;
 }
 
+/**
+ * The prototype of the exploded mystery ship describing the characteristics
+ * of the exploded mystery ship.
+ *
+ * @type {Object}
+ */
 ExplodedMysteryShip.prototype = {
 
     /**
-     * Draws an alien by using an image.
+     * Draws an exploded mystery ship with the score by using an image and text.
      *
      * @param  {Object}  ct - The canvas context.
      *
@@ -133,8 +171,8 @@ ExplodedMysteryShip.prototype = {
     },
 
     /**
-     * Decreases the timer with one. The timer controls how long the explosion
-     * should be present.
+     * Decreases the timer with one. The timer controls how long the exploded
+     * mystery ship should be present.
      *
      * @return {void}
      */

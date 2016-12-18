@@ -1,6 +1,17 @@
+/**
+ * The grounds handler in the game.
+ *
+ * Creates a row of ground elements to create the ground of the earth.
+ */
+
 /*global Ground */
 /*global Vector */
 
+/**
+ * The ground constructor.
+ *
+ * Sets the grounds specifications and creates a row of ground elements.
+ */
 function Grounds() {
     this.grounds = [];
     var posX = 2;
@@ -12,7 +23,7 @@ function Grounds() {
 }
 
 /**
- * The Ground prototype.
+ * The prototype of the grounds describing the characteristics of the grounds.
  * @type {Object}
  */
 Grounds.prototype = {

@@ -1,28 +1,45 @@
+/**
+ * The alien handler in the game.
+ *
+ * Handles one alien in the game and is resposible for drawing, moving and checks
+ * if the alien has hit by a missile or if an aliens hits the cannon (game over).
+ *
+ * It also handles the image of an exploded alien when the alien has been hit
+ * by a missile from the cannon.
+ *
+ */
+
 /*global Vector */
 /*global isIntersect */
 
 /**
- * The alien trying to invade the earth.
+ * The alien constructor
  *
- * @param {Object}  position - The vector position for the alien.
- * @param {Object}  velocity - The velocity of the alien movement as vector.
- * @param {string}  direction - The dirction of the alien.
+ * Sets the alien specifications.
+ *
+ * @param {Object} position         - the position of the alien in x and y led.
+ * @param {String} direction        - the direction (left or right) of the alien.
+ * @param {Object} alien            - the characteristics of the alien.
+ * @param {Integer} gameBoardWidth  - the widht of the game board.
  */
-function Alien(position, direction, width, height, spritePosX, spritePosY, spritePosX2, points) {
+function Alien(position, direction, alien, gameBoardWidth) {
     this.position           = position  || new Vector();
     this.direction          = direction || "right";
     this.newDirection       = direction || "right";
-    this.alienWidth         = width;
-    this.alienHeight        = height;
-    this.spritePosX         = spritePosX;
-    this.spritePosY         = spritePosY;
-    this.spritePosX2         = spritePosX2;
-    this.points             = points;
+    this.alienWidth         = alien.width;
+    this.alienHeight        = alien.height;
+    this.spritePosX         = alien.spritePosX;
+    this.spritePosY         = alien.spritePosY;
+    this.spritePosX2        = alien.spritePosX2;
+    this.points             = alien.points;
+    this.gameBoardWidth     = gameBoardWidth;
     this.velocity           = new Vector(0.4, 0.4);
     this.shouldBeRemoved    = false;
     this.img                = new window.Image();
     this.img.src            = "../img/game/space_invaders.png";
     this.version            = 0;
+    this.jumpDistance       = 10;
+    this.playgroundOffset   = 10;
 }
 
 /**
@@ -58,7 +75,7 @@ Alien.prototype = {
      * @return {void}
      */
     moveLeft: function() {
-        this.position.x -= 10 * this.velocity.x;
+        this.position.x -= this.jumpDistance * this.velocity.x;
     },
 
     /**
@@ -67,7 +84,7 @@ Alien.prototype = {
      * @return {void}
      */
     moveRight: function() {
-        this.position.x += 10 * this.velocity.x;
+        this.position.x += this.jumpDistance * this.velocity.x;
     },
 
     /**
@@ -94,11 +111,11 @@ Alien.prototype = {
      * @return {void}
      */
     stayInArea: function() {
-        if (this.position.x < 10) {
+        if (this.position.x < this.playgroundOffset) {
             this.newDirection = "right";
         }
 
-        if (this.position.x + this.alienWidth > 890) {
+        if (this.position.x + this.alienWidth > (this.gameBoardWidth - this.playgroundOffset)) {
             this.newDirection = "left";
         }
     },
@@ -135,6 +152,14 @@ Alien.prototype = {
     }
 };
 
+/**
+ * The exploded alien constructor
+ *
+ * Handles the image of an exploded alien when the alien is hit by a missile
+ * from the cannon. A timer determines how long the image should be shown.
+ *
+ * @param {Object} position the position of the exploded alien in x and y led.
+ */
 function ExplodedAlien(position) {
     this.position           = position  || new Vector();
     this.width              = 35;
@@ -144,6 +169,12 @@ function ExplodedAlien(position) {
     this.timer              = 15;
 }
 
+/**
+ * The prototype of the exploded alien describing the characteristics of the
+ * exploded alien.
+ *
+ * @type {Object}
+ */
 ExplodedAlien.prototype = {
 
     /**

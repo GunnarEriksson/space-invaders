@@ -1,5 +1,7 @@
 /**
- * Playing SpaceInvaders while learning JavaScript object model.
+ * Main part of the game space invaders.
+ *
+ * Handles pressed buttons and calls other JavaScript files.
  */
 
 /*global Aliens */
@@ -111,18 +113,28 @@ function Vector(x, y) {
     this.y = y || 0;
 }
 
+/**
+ * The score constructor
+ *
+ * Sets the score characteristics.
+ */
 function Score() {
     this.highScore  = 0;
     this.score      = null;
 }
 
+/**
+ * The prototype of the score describing the characteristics of the score.
+ *
+ * @type {Object}
+ */
 Score.prototype = {
     start: function() {
         this.score = 0;
     },
 
     /**
-     * Draws all aliens in the array and the beams.
+     * Draws all score and high score on the top of the game board.
      *
      * @param  {Object}  ct - The canvas context.
      *
@@ -175,7 +187,7 @@ window.SpaceInvaders = (function() {
         cities = new Cities(ct);
         ground = new Grounds();
         mysteryShips = new MysteryShips(score);
-        aliens = new Aliens(cities, score);
+        aliens = new Aliens(cities, score, width);
         cannons = new Cannons(aliens, cities, mysteryShips);
         isNewGame = true;
 
@@ -183,6 +195,11 @@ window.SpaceInvaders = (function() {
         console.log('Init the game');
     };
 
+    /**
+     * Starts the game.
+     *
+     * @return {Void}
+     */
     var startGame = function() {
         isCannonPresent = true;
         isAliensPresent = true;
@@ -190,7 +207,7 @@ window.SpaceInvaders = (function() {
         score.start();
         cities.start();
         mysteryShips.start();
-        cannons.start(width, height);
+        cannons.start(height);
     };
 
     /**

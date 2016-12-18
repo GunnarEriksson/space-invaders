@@ -1,5 +1,19 @@
+/**
+ * The ground handler in the game.
+ *
+ * Draws the ground of the earth by using an image.
+ *
+ */
+
 /*global Vector */
 
+/**
+ * The ground constructor.
+ *
+ * Sets the ground specifications.
+ *
+ * @param {Object} position - the position of the ground element.
+ */
 function Ground(position) {
     this.position           = position  || new Vector();
     this.width              = 32;
@@ -8,10 +22,15 @@ function Ground(position) {
     this.img.src            = "../img/tiles/ground.png";
 }
 
+/**
+ * The prototype of the ground describing the characteristics of the ground.
+ *
+ * @type {Object}
+ */
 Ground.prototype = {
 
     /**
-     * Draws an alien by using an image.
+     * Draws a ground element by using an image.
      *
      * @param  {Object}  ct - The canvas context.
      *

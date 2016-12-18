@@ -1,17 +1,29 @@
+/**
+ * The cannon handler in the game.
+ *
+ * Handles one cannon in the game and is resposible for drawing, moving and checks
+ * if the cannon has hit by a beam or a ray from the aliens. It also checks if
+ * the cannon is hit by an alien (game over).
+ *
+ * Creates a missile if a gamer fires a missile.
+ *
+ */
+
 /*global Audio */
 /*global Key */
 /*global Missiles */
 /*global Vector */
 /*global isIntersect */
 
-
-
 /**
- * The cannon to shoot aliens with.
+ * The cannon constructor.
  *
- * @param {Object}  position - The vector position for the cannon.
- * @param {Object}  velocity - The velocity of the cannon movement as vector.
- * @param {Object}  aliens - The aliens object containing all aliens.
+ * Sets the cannon specifications.
+ *
+ * @param {[type]} position     - the position for the cannon in x and y led.
+ * @param {[type]} aliens       - the aliens object containing all aliens.
+ * @param {[type]} cities       - the cities object containing all cities.
+ * @param {[type]} mysteryShips - the object containing the mystery ship object.
  */
 function Cannon(position, aliens, cities, mysteryShips) {
     this.aliens                 = aliens;
@@ -126,7 +138,7 @@ Cannon.prototype = {
      * function. Call the missile function to update the missile movement and to
      * check if aliens has hit the cannon. Checks so the cannon stays in the areay.
      *
-     * @param  {number}  width - The width of the cannon.
+     * @param  {number}  width - the width of the cannon.
      *
      * @return {void}
      */
@@ -142,7 +154,7 @@ Cannon.prototype = {
     /**
      * Checks that the cannon stays on the game board.
      *
-     * @param  {number}  width - The width of the cannon.
+     * @param  {number}  width - the width of the cannon.
      *
      * @return {void}
      */
@@ -160,12 +172,14 @@ Cannon.prototype = {
      * Checks if the cannon isIntersects with the aliens beams. If they are, the
      * cannon is hit by the an alien beam.
      *
-     * @param  {Object}  beamPos - The vector position of an alien beam.
+     * @param  {Object}  beamRayPos     - the vector position of an alien beam or ray.
+     * @param  {Integer}  beamRayWidth  - the width of the beam or ray.
+     * @param  {Integer}  beamRayHeight - the height of the beam or ray.
      *
      * @return {Boolean}  True if the cannon is hit by an alien beam, false otherwise.
      */
-    cannonHit: function(beamPos) {
-        if (isIntersect(this.position.x, this.position.y, this.cannonWidth, this.cannonHeight, beamPos.x, beamPos.y, 3, 5)) {
+    cannonHit: function(beamRayPos, beamRayWidth, beamRayHeight) {
+        if (isIntersect(this.position.x, this.position.y, this.cannonWidth, this.cannonHeight, beamRayPos.x, beamRayPos.y, beamRayWidth, beamRayHeight)) {
             this.shouldBeRemoved = true;
             return true;
         } else {

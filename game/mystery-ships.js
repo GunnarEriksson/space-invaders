@@ -1,3 +1,9 @@
+/**
+ * The mystery ships handler in the game.
+ *
+ * Creates, removes and handles all mystery ships in the game.
+ */
+
 /*global Audio */
 /*global Guer */
 /*global ExplodedMysteryShip */
@@ -5,8 +11,11 @@
 /*global Vector */
 
 /**
- * Mystery ship object which controls all the mystery ships.
+ * The mystery ships constructor.
  *
+ * Sets the mystery ships specifications.
+ *
+ * @param {Integer} score   - the score for hitting the mystery ship.
  */
 function MysteryShips(score) {
     this.score                  = score;
@@ -20,10 +29,11 @@ function MysteryShips(score) {
 }
 
 /**
- * The aliens prototype.
+ * The prototype of the mystery ships describing the characteristics of the
+ * mystery ships.
+ *
  * @type {Object}
- */
-MysteryShips.prototype = {
+ */MysteryShips.prototype = {
     start: function() {
         this.mysteryShips           = [];
         this.explodedMysteryShips   = [];
@@ -33,7 +43,7 @@ MysteryShips.prototype = {
     },
 
     /**
-     * Draws all aliens in the array and the beams.
+     * Draws all mystery ship and the exploded mystery ship, if present.
      *
      * @param  {Object}  ct - The canvas context.
      *
@@ -50,10 +60,10 @@ MysteryShips.prototype = {
     },
 
     /**
-     * Checks if aliens has been hit by a missile. If the an alien has been hit
-     * it is marked to be removed.
+     * Checks if mystery ship has been hit by a missile. If the an mystery ship
+     * has been hit, it is marked to be removed.
      *
-     * @param  {Object}  missilePos - The vector of the missile location.
+     * @param  {Object}  missile - the missile object.
      *
      * @return {Boolean}  True if an alien has been hit by a missile, false otherwise.
      */
@@ -75,6 +85,16 @@ MysteryShips.prototype = {
      *
      * @return {void}
      */
+    /**
+     * Decreases a time, set by a random value, to check if a mystery ship should
+     * be created an started. The direction of the ship is randomly choosen.
+     *
+     * If the ship is hit by a missle the ship is removed and an exploded mystery
+     * ship is created. A timer controls how long the exploded mystery ship should
+     * be present.
+     *
+     * @return {void}
+     */
     update: function() {
         if (this.mysteryShips.length === 0) {
             this.timer--;
@@ -83,9 +103,9 @@ MysteryShips.prototype = {
         if (this.timer === 0) {
             var direction = Guer.random(0, 1);
             if (direction > 0) {
-                this.mysteryShips.push(new MysteryShip(new Vector(850, 110), new Vector(3, 3), "left"));
+                this.mysteryShips.push(new MysteryShip(new Vector(850, 110), "left"));
             } else {
-                this.mysteryShips.push(new MysteryShip(new Vector(15, 110), new Vector(3, 3), "right"));
+                this.mysteryShips.push(new MysteryShip(new Vector(15, 110), "right"));
             }
 
             this.timer = Guer.random(1600, 1900);

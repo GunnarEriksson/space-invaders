@@ -1,3 +1,8 @@
+/**
+ * The helper functions.
+ *
+ */
+
 /*exported isIntersect, showTextLetterByLetter */
 
 /**
@@ -18,6 +23,19 @@ function isIntersect(ax, ay, aw, ah, bx, by, bw, bh) {
     return ax < bx + bw && bx < ax + aw && ay < by + bh && by < ay + ah;
 }
 
+/**
+ * Helper function to show a text letter by letter with a delay.
+ *
+ * @param  {Object}  ct             - the canvas context.
+ * @param  {Integer} timer          - the timer controlling the time to show the text.
+ * @param  {Integer} index          - the position in the text array.
+ * @param  {[String]} text          - the text stored in an array.
+ * @param  {Integer} offsetX        - the position in x led for the character.
+ * @param  {Integer} offsetY        - the position in y led for the character.
+ * @param  {Integer} textDistance   - the distance between the characters.
+ *
+ * @return {Void}
+ */
 function showTextLetterByLetter(ct, timer, index, text, offsetX, offsetY, textDistance) {
     if (timer % 8 === 0 & index < text.length) {
         index++;

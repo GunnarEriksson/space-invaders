@@ -1,6 +1,24 @@
+/**
+ * The game over handler in the game.
+ *
+ * Writes the text "GAME OVER", "YOUR SCORE IS" and the score for the game
+ * on the screen.
+ *
+ * Writes the text "NEW GAME" and "HIGH SCORE" with the possibility to choose
+ * one of the alternatives.
+ *
+ */
+
 /*global isIntersect */
 /*global showTextLetterByLetter */
 
+/**
+ * The game over constructor.
+ *
+ * Sets the game over specifications.
+ *
+ * @param {Object} canvas - the canvas to write the text on.
+ */
 function GameOver(canvas) {
     this.canvas = canvas;
     canvas.addEventListener("click", this.checkStart.bind(this), false);
@@ -16,11 +34,29 @@ function GameOver(canvas) {
     this.isHooverOverHighScore  = false;
 }
 
+/**
+ * The prototype of the game over describing the characteristics.
+ *
+ * @type {Object}
+ */
 GameOver.prototype = {
+    /**
+     * Initates the score.
+     *
+     * @param  {Integer} score - the score of the game.
+     * @return {Void}
+     */
     init: function(score) {
         this.score = score;
     },
 
+    /**
+     * Draws the text when the game is over. The text is drawn letter by letter
+     * with a delay.
+     *
+     * @param  {Object}  ct - The canvas context.
+     * @return {Void}
+     */
     draw: function(ct) {
         ct.save();
         ct.translate(980 / 6, 150);
@@ -61,12 +97,25 @@ GameOver.prototype = {
         ct.restore();
     },
 
+    /**
+     * Updates the timer, which is used to write the text letter by letter with
+     * delay.
+     *
+     * @return {Void}
+     */
     update: function() {
         if (this.timer <= 530) {
             this.timer++;
         }
     },
 
+    /**
+     * Checks if the text "NEW GAME" is clicked to start a new game.
+     *
+     * @param  {Object} event  - the click event.
+     *
+     * @return {Void}
+     */
     checkStart: function(event) {
         var pos = this.getMousePos(event);
 
@@ -75,6 +124,14 @@ GameOver.prototype = {
         }
     },
 
+    /**
+     * Checks if the mouse is moved and gets the position of the mouse on
+     * the canvas.
+     *
+     * @param  {Object} event - the mouse move event
+     *
+     * @return {Void}
+     */
     mouseMove: function(event) {
         var pos = this.getMousePos(event);
 
@@ -82,6 +139,13 @@ GameOver.prototype = {
         this.hooverOverHighScore(pos.x, pos.y);
     },
 
+    /**
+     * Gets the mouse position on the canvas in x and y led.
+     *
+     * @param  {Object} event - the mouse move event.
+     *
+     * @return {Void}
+     */
     getMousePos: function(event) {
         var rect = this.canvas.getBoundingClientRect();
 
@@ -91,6 +155,14 @@ GameOver.prototype = {
         };
     },
 
+    /**
+     * Checks if the mouse is hoovering over the text "HIGH SCORES".
+     *
+     * @param  {Integer} ax - the position in x led for the mouse on canvas.
+     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     *
+     * @return {Void}
+     */
     hooverOverNewGame: function(ax, ay) {
         if (isIntersect(ax, ay, 1, 1, 394, 333, 125, 20)) {
             this.isHoverOverNewGame = true;
@@ -99,6 +171,14 @@ GameOver.prototype = {
         }
     },
 
+    /**
+     * Checks if the mouse is hoovering over the text "NEW GAME".
+     *
+     * @param  {Integer} ax - the position in x led for the mouse on canvas.
+     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     *
+     * @return {Void}
+     */
     hooverOverHighScore: function(ax, ay) {
         if (isIntersect(ax, ay, 1, 1, 370, 374, 160, 20)) {
             this.isHooverOverHighScore = true;

@@ -1,3 +1,9 @@
+/**
+ * The aliens handler in the game.
+ *
+ * Creates, removes and handles all aliens in the game.
+ */
+
 /*global Alien */
 /*global Audio */
 /*global Beams */
@@ -7,12 +13,18 @@
 /*global isIntersect */
 
 /**
- * Aliens object which controls all the aliens.
- * Creates five rows with eleven aliens per row.
+ * The aliens constructor.
+ *
+ * Sets the aliens specifications.
+ *
+ * @param {Object} cities           - the object containing the cities.
+ * @param {Object} score            - the object containing the score.
+ * @param {Integer} gameBoardWidth  - the width of the game board.
  */
-function Aliens(cities, score) {
+function Aliens(cities, score, gameBoardWidth) {
     this.cities = cities;
     this.score = score;
+    this.gameBoardWidth = gameBoardWidth;
     this.aliens = null;
     this.explodedAliens = null;
     this.aliensDirection = null;
@@ -21,21 +33,55 @@ function Aliens(cities, score) {
     this.counter = null;
     this.speed = null;
     this.moveSoundVersion = null;
+    this.numberOfAliensInRow = 11;
+    this.distXNextAlien = 50;
+    this.distYNextAlien = 37;
     this.alienExplosion = new Audio("../sound/alien_explosion.wav");
     this.alienMoveSoundHigh = new Audio("../sound/alien_move_high.wav");
     this.alienMoveSoundLow = new Audio("../sound/alien_move_low.wav");
 }
 
 /**
- * The aliens prototype.
+ * The prototype of the alien describing the characteristics of the alien.
+ *
  * @type {Object}
  */
 Aliens.prototype = {
 
+    /**
+     * Creates all aliens for the game and starts the beam and ray functions, which
+     * are used by the aliens.
+     *
+     * @return {Void}
+     */
     start: function() {
         var posX = 200;
         var posY = 150;
         var alienNo = 0;
+        var alienTop = {
+            width: 21,
+            height: 24,
+            spritePosX: 76,
+            spritePosY: 31,
+            spritePosX2: 107,
+            points: 30
+        };
+        var alienMiddle = {
+            width: 27,
+            height: 24,
+            spritePosX: 6,
+            spritePosY: 31,
+            spritePosX2: 42,
+            points: 20
+        };
+        var alienBottom = {
+            width: 32,
+            height: 24,
+            spritePosX: 56,
+            spritePosY: 5,
+            spritePosX2: 94,
+            points: 10
+        };
         this.aliens = [];
         this.explodedAliens = [];
         this.aliensDirection = "left";
@@ -44,31 +90,31 @@ Aliens.prototype = {
         this.moveSoundVersion = 0;
         this.missileVersion = 0;
 
-        for (var i = 0; i < 11; i++) {
-            this.aliens[alienNo] = new Alien(new Vector(posX, posY), this.aliensDirection, 21, 24, 76, 31, 107, 30);
+        for (var i = 0; i < this.numberOfAliensInRow; i++) {
+            this.aliens[alienNo] = new Alien(new Vector(posX, posY), this.aliensDirection, alienTop, this.gameBoardWidth);
             alienNo++;
-            posX += 50;
+            posX += this.distXNextAlien;
         }
-        posY += 37;
+        posY += this.distYNextAlien;
 
         for (var j = 0; j < 2; j++) {
             posX = 198;
-            for (var k = 0; k < 11; k++) {
-                this.aliens[alienNo] = new Alien(new Vector(posX, posY), this.aliensDirection, 27, 24, 6, 31, 42, 20);
+            for (var k = 0; k < this.numberOfAliensInRow; k++) {
+                this.aliens[alienNo] = new Alien(new Vector(posX, posY), this.aliensDirection, alienMiddle, this.gameBoardWidth);
                 alienNo++;
-                posX += 50;
+                posX += this.distXNextAlien;
             }
-            posY += 37;
+            posY += this.distYNextAlien;
         }
 
         for (var m = 0; m < 2; m++) {
             posX = 196;
-            for (var n = 0; n < 11; n++) {
-                this.aliens[alienNo] = new Alien(new Vector(posX, posY), this.aliensDirection, 32, 24, 56, 5, 94, 10);
+            for (var n = 0; n < this.numberOfAliensInRow; n++) {
+                this.aliens[alienNo] = new Alien(new Vector(posX, posY), this.aliensDirection, alienBottom, this.gameBoardWidth);
                 alienNo++;
-                posX += 50;
+                posX += this.distXNextAlien;
             }
-            posY += 37;
+            posY += this.distYNextAlien;
         }
 
         this.beams.start();
@@ -76,9 +122,9 @@ Aliens.prototype = {
     },
 
     /**
-     * Creates the beams fired by the aliens.
+     * Creates the beams and rays fired by the aliens.
      *
-     * @param  {Object}  cannon - The vector where the cannon is located.
+     * @param  {Object}  cannons - The cannons object which handles the cannon.
      *
      * @return {void}
      */
@@ -88,7 +134,7 @@ Aliens.prototype = {
     },
 
     /**
-     * Draws all aliens in the array and the beams.
+     * Draws all aliens in the array and the beams and rays.
      *
      * @param  {Object}  ct - The canvas context.
      *
@@ -178,7 +224,8 @@ Aliens.prototype = {
     /**
      * Updates all aliens. Removes aliens that have been hit by a missile from
      * the array of aliens. Plays an sound of explosion when an alien is hit.
-     * Sets the dirction of all aliens and updates the beams fired by the aliens.
+     * Sets the dirction of all aliens and updates the beams and rays fired by
+     * the aliens.
      *
      * @return {void}
      */
