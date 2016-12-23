@@ -31,7 +31,7 @@ function Ray(position, cannons, aliens, cities) {
     this.cannonHit          = false;
 
     this.rayImg              = new window.Image();
-    this.rayImg.src          = "../img/game/ray.png";
+    this.rayImg.src          = "img/game/ray.png";
 }
 
 /**
@@ -91,7 +91,7 @@ Ray.prototype = {
      * @return {void}
      */
     stayInArea: function() {
-        if (this.position.y > 650 - this.height) {
+        if (this.position.y > 572 - this.height) {
             this.shouldBeRemoved = true;
         }
     }

@@ -24,8 +24,8 @@ function City(ct, position) {
     this.position           = position  || new Vector();
     this.width              = 80;
     this.height             = 51;
-    this.canvasOffset       = 480;
-    this.canvasOffsetRay    = 469;
+    this.canvasOffset       = 452;
+    this.canvasOffsetRay    = 439;
 }
 
 /**

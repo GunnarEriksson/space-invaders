@@ -12,12 +12,12 @@
  *
  * Sets the grounds specifications and creates a row of ground elements.
  */
-function Grounds() {
+function Grounds(height) {
     this.grounds = [];
     var posX = 2;
 
     for (var i = 0; i < 28; i++) {
-        this.grounds.push(new Ground(new Vector(posX, 650)));
+        this.grounds.push(new Ground(new Vector(posX, height - 75)));
         posX += 32;
     }
 }

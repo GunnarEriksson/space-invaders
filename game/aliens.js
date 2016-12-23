@@ -36,9 +36,9 @@ function Aliens(cities, score, gameBoardWidth) {
     this.numberOfAliensInRow = 11;
     this.distXNextAlien = 50;
     this.distYNextAlien = 37;
-    this.alienExplosion = new Audio("../sound/alien_explosion.wav");
-    this.alienMoveSoundHigh = new Audio("../sound/alien_move_high.wav");
-    this.alienMoveSoundLow = new Audio("../sound/alien_move_low.wav");
+    this.alienExplosion = new Audio("sound/alien_explosion.wav");
+    this.alienMoveSoundHigh = new Audio("sound/alien_move_high.wav");
+    this.alienMoveSoundLow = new Audio("sound/alien_move_low.wav");
 }
 
 /**
@@ -56,7 +56,7 @@ Aliens.prototype = {
      */
     start: function() {
         var posX = 200;
-        var posY = 150;
+        var posY = 130;
         var alienNo = 0;
         var alienTop = {
             width: 21,

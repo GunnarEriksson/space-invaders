@@ -25,7 +25,7 @@ function Missiles(aliens, cities, mysteryShips) {
     this.mysteryShips = mysteryShips;
     this.missiles = [];
     this.airExplosions = [];
-    this.airExplosion = new Audio("../sound/air_explosion.wav");
+    this.airExplosion = new Audio("sound/air_explosion.wav");
 }
 
 /**

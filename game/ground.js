@@ -19,7 +19,7 @@ function Ground(position) {
     this.width              = 32;
     this.height             = 32;
     this.img                = new window.Image();
-    this.img.src            = "../img/tiles/ground.png";
+    this.img.src            = "img/tiles/ground.png";
 }
 
 /**

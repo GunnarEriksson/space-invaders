@@ -21,17 +21,22 @@
  */
 function GameOver(canvas) {
     this.canvas = canvas;
-    canvas.addEventListener("click", this.checkStart.bind(this), false);
-    canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
-    this.text               = ["G", "A", "M", "E", " ", "O", "V", "E", "R"];
-    this.subText            = ["Y", "O", "U", "R ", " ", "S", "C", "O", "R", "E", " ", "I", "S"];
+    this.text                   = ["G", "A", "M", "E", " ", "O", "V", "E", "R"];
+    this.subText                = ["E", "N", "T", "E", "R ", " ", "Y", "O", "U", "R", " ", "N", "A", "M", "E"];
+    this.name                   = null;
+    this.width                  = 2;
+    this.height                 = 25;
     this.score                  = 0;
     this.timer                  = 0;
     this.textIndex              = 0;
     this.subtextIndex           = 0;
     this.scoreIndex             = 0;
+    this.cursorTimer            = 0;
+    this.textDistance           = 25;
     this.isHoverOverNewGame     = false;
     this.isHooverOverHighScore  = false;
+    this.showCursor             = false;
+    this.flag                   = null;
 }
 
 /**
@@ -47,7 +52,35 @@ GameOver.prototype = {
      * @return {Void}
      */
     init: function(score) {
+        console.log("Calling Game Over init function");
         this.score = score;
+        this.name  = [];
+        this.flag = true;
+        this.canvas.addEventListener("click", this.checkStart.bind(this), false);
+        this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
+        this.showKeyDownLog = true;
+        this.showKeyUpLog = true;
+
+        this.addingKeyPressListener();
+    },
+
+    addingKeyPressListener: function() {
+        var that = this;
+        window.addEventListener('keypress', function(event) {
+            var charCode = event.charCode;
+            if ((charCode === 8) ||(charCode === 32) || (charCode > 47 && charCode < 58) || (charCode > 64 && charCode < 91)
+                || (charCode > 96 && charCode < 123) || (charCode === 134) || (charCode === 143)
+                || (charCode === 132) || (charCode === 142) || (charCode === 148) || (charCode === 153)) {
+                if (charCode === 8) {
+                    if (that.name.length > 0) {
+                        that.name.pop();
+                    }
+                } else {
+                    that.name.push(String.fromCharCode(charCode));
+                }
+
+            }
+        }, false);
     },
 
     /**
@@ -69,29 +102,40 @@ GameOver.prototype = {
             this.textIndex = showTextLetterByLetter(ct, this.timer, this.textIndex, this.text, 150, 0, 30);
         }
 
-        if (this.timer > 250) {
-            this.subtextIndex = showTextLetterByLetter(ct, this.timer, this.subtextIndex, this.subText, 100, 62, 30);
+        ct.font = "normal lighter 36px arcade, monospace";
+        if (this.timer > 170) {
+            this.subtextIndex = showTextLetterByLetter(ct, this.timer, this.subtextIndex, this.subText, 80, 62, 30);
         }
 
-        if (this.timer > 450) {
-            ct.fillText(this.score, 230, 130);
+        if (this.timer > 320) {
+            ct.fillStyle = "rgb(79, 255, 48)";
+            var offsetX = 140;
+            for (var i = 0; i < this.name.length; i++) {
+                ct.fillText(this.name[i], offsetX, 133);
+                offsetX += this.textDistance;
+            }
+
+            ct.strokeStyle = "rgb(79, 255, 48)";
+            if (this.showCursor) {
+                ct.fillRect (offsetX, 110, this.width, this.height);
+            }
         }
 
         ct.font = "normal lighter 24px arcade, monospace";
         if (this.isHoverOverNewGame) {
             ct.fillStyle = "rgb(79, 255, 48)";
-            ct.fillText('NEW GAME', 230, 200);
+            ct.fillText('SAVE', 230, 200);
         } else {
             ct.fillStyle = "#fff";
-            ct.fillText('NEW GAME', 230, 200);
+            ct.fillText('SAVE', 230, 200);
         }
 
         if (this.isHooverOverHighScore) {
             ct.fillStyle = "rgb(79, 255, 48)";
-            ct.fillText('HIGH SCORES', 207, 240);
+            ct.fillText('CONTINUE', 207, 240);
         } else {
             ct.fillStyle = "#fff";
-            ct.fillText('HIGH SCORES', 207, 240);
+            ct.fillText('CONTINUE', 207, 240);
         }
 
         ct.restore();
@@ -107,6 +151,14 @@ GameOver.prototype = {
         if (this.timer <= 530) {
             this.timer++;
         }
+
+        this.cursorTimer = (this.cursorTimer + 1) % 60;
+
+        if (this.cursorTimer > 30) {
+            this.showCursor = true;
+        } else {
+            this.showCursor = false;
+        }
     },
 
     /**
@@ -117,6 +169,7 @@ GameOver.prototype = {
      * @return {Void}
      */
     checkStart: function(event) {
+        console.log("Check start called");
         var pos = this.getMousePos(event);
 
         if (isIntersect(pos.x, pos.y, 1, 1, 394, 333, 125, 20)) {
@@ -185,5 +238,10 @@ GameOver.prototype = {
         } else {
             this.isHooverOverHighScore = false;
         }
+    },
+
+    addName: function(keyCode) {
+        console.log("Add name called with key code: " + keyCode);
+        this.name.push(String.fromCharCode(keyCode));
     }
 };

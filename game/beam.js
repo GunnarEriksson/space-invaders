@@ -24,7 +24,7 @@ function Beam(position, cannons, aliens, cities) {
     this.cannons            = cannons;
     this.aliens             = aliens;
     this.cities             = cities;
-    this.velocity           = new Vector(6, 6);
+    this.velocity           = new Vector(5, 5);
     this.width              = 3;
     this.height             = 5;
     this.shouldBeRemoved    = false;
@@ -90,7 +90,7 @@ Beam.prototype = {
      * @return {void}
      */
     stayInArea: function() {
-        if (this.position.y > 650 - this.height) {
+        if (this.position.y > 572 - this.height) {
             this.shouldBeRemoved = true;
         }
     }

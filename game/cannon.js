@@ -37,16 +37,16 @@ function Cannon(position, aliens, cities, mysteryShips) {
     this.explodedVersion        = 0;
 
     this.cannonImg              = new window.Image();
-    this.cannonImg.src          = "../img/game/cannon.png";
+    this.cannonImg.src          = "img/game/cannon.png";
     this.explodedCannonImg      = new window.Image();
-    this.explodedCannonImg.src  = "../img/game/cannon_exploded.png";
+    this.explodedCannonImg.src  = "img/game/cannon_exploded.png";
     this.explodedCannon2Img     = new window.Image();
-    this.explodedCannon2Img.src = "../img/game/cannon_exploded2.png";
+    this.explodedCannon2Img.src = "img/game/cannon_exploded2.png";
 
-    this.cannonMissile          = new Audio("../sound/cannon_missile.wav");
+    this.cannonMissile          = new Audio("sound/cannon_missile.wav");
     this.cannonMissile.volume   = 0.3;
 
-    this.cannonExplosion        = new Audio("../sound/cannon_explosion.wav");
+    this.cannonExplosion        = new Audio("sound/cannon_explosion.wav");
     this.cannonExplosion.volume = 0.3;
 }
 

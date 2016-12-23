@@ -54,6 +54,8 @@ window.Key = {
     pressed: {},
     released: {},
 
+    BACKSPACE: 8,
+    ENTER: 13,
     LEFT:   37,
     RIGHT:  39,
     SPACE:  32,
@@ -89,7 +91,7 @@ window.Key = {
      */
     onKeyup: function(event) {
         delete this.pressed[event.keyCode];
-    }
+    },
 };
 
 // Add event listener to key up and key down (jQuery). Connect the event to
@@ -119,7 +121,7 @@ function Vector(x, y) {
  * Sets the score characteristics.
  */
 function Score() {
-    this.highScore  = 0;
+    this.highScore  = null;
     this.score      = null;
 }
 
@@ -130,7 +132,9 @@ function Score() {
  */
 Score.prototype = {
     start: function() {
+        this.highScore  = 0;
         this.score = 0;
+        this.getHighScore();
     },
 
     /**
@@ -156,6 +160,22 @@ Score.prototype = {
 
     addScore: function(score) {
         this.score += score;
+    },
+
+    getHighScore: function() {
+        var that = this;
+
+        $.ajax({
+            type: 'post',
+            url: 'game/highScores.php?action=getHighScore',
+            dataType: 'json',
+            success: function(data) {
+                that.highScore = data;
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('Ajax request failed: ' + textStatus + ', ' + errorThrown);
+            }
+        });
     }
 };
 
@@ -166,7 +186,7 @@ Score.prototype = {
 window.SpaceInvaders = (function() {
     var ct, cannons, lastGameTick, aliens, isCannonPresent, isAliensPresent, ground, cities, mysteryShips, score, intro;
     var width, height;
-    var gameOver, status, isNewGame;
+    var gameOver, status, isNewGame, highScore, isInitHighScore, isInitGameOver;
 
     /**
      * Initiates the game.
@@ -179,17 +199,20 @@ window.SpaceInvaders = (function() {
         ct = canvas.getContext('2d');
         ct.lineWidth = 1;
         width = 900;
-        height = 750;
+        height = 650;
         status = new Status("intro");
         intro = new Intro(canvas, status);
         gameOver = new GameOver(canvas);
+        highScore = new HighScore(canvas, status);
         score = new Score();
         cities = new Cities(ct);
-        ground = new Grounds();
+        ground = new Grounds(height);
         mysteryShips = new MysteryShips(score);
         aliens = new Aliens(cities, score, width);
         cannons = new Cannons(aliens, cities, mysteryShips);
         isNewGame = true;
+        isInitHighScore = true;
+        isInitGameOver = true;
 
 
         console.log('Init the game');
@@ -203,8 +226,8 @@ window.SpaceInvaders = (function() {
     var startGame = function() {
         isCannonPresent = true;
         isAliensPresent = true;
-        aliens.start();
         score.start();
+        aliens.start();
         cities.start();
         mysteryShips.start();
         cannons.start(height);
@@ -220,6 +243,8 @@ window.SpaceInvaders = (function() {
     var update = function(td) {
 
         if (status.gameStatus === "game") {
+            isInitHighScore = true;
+            isInitGameOver = true;
             if (isNewGame) {
                 startGame();
                 isNewGame = false;
@@ -242,11 +267,24 @@ window.SpaceInvaders = (function() {
                 status.gameStatus = "gameOver";
             }
         } else if (status.gameStatus === "intro") {
+            isInitHighScore = true;
+            isInitGameOver = true;
             intro.update();
         } else if (status.gameStatus === "gameOver") {
-            isNewGame = true;
-            gameOver.init(score.score);
+            if (isInitGameOver) {
+                gameOver.init(score.score);
+                isInitGameOver = false;
+                isNewGame = true;
+                isInitHighScore = true;
+            }
             gameOver.update();
+        } else if (status.gameStatus === "highScore") {
+            if (isInitHighScore) {
+                highScore.start();
+                isInitHighScore = false;
+                isInitGameOver = true;
+            }
+            highScore.update();
         }
     };
 
@@ -258,7 +296,7 @@ window.SpaceInvaders = (function() {
     var render = function() {
         ct.clearRect(0, 0, width, height);
         if (status.gameStatus === "game") {
-            ct.drawImage(cities.cityCanvas, 0, 480);
+            ct.drawImage(cities.cityCanvas, 0, 452);
             ground.draw(ct);
             mysteryShips.draw(ct);
             cannons.draw(ct);
@@ -267,11 +305,13 @@ window.SpaceInvaders = (function() {
         } else if (status.gameStatus === "intro") {
             intro.draw(ct);
         } else if (status.gameStatus === "gameOver") {
-            ct.drawImage(cities.cityCanvas, 0, 480);
+            ct.drawImage(cities.cityCanvas, 0, 452);
             ground.draw(ct);
             cannons.draw(ct);
             score.draw(ct);
             gameOver.draw(ct);
+        } else if (status.gameStatus === "highScore") {
+            highScore.draw(ct);
         }
     };
 

@@ -36,7 +36,7 @@ function Alien(position, direction, alien, gameBoardWidth) {
     this.velocity           = new Vector(0.4, 0.4);
     this.shouldBeRemoved    = false;
     this.img                = new window.Image();
-    this.img.src            = "../img/game/space_invaders.png";
+    this.img.src            = "img/game/space_invaders.png";
     this.version            = 0;
     this.jumpDistance       = 10;
     this.playgroundOffset   = 10;
@@ -165,7 +165,7 @@ function ExplodedAlien(position) {
     this.width              = 35;
     this.height             = 25;
     this.img                = new window.Image();
-    this.img.src            = "../img/game/alien_explode.png";
+    this.img.src            = "img/game/alien_explode.png";
     this.timer              = 15;
 }
 

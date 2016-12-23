@@ -31,7 +31,7 @@ function MysteryShip(position, direction) {
     this.shouldBeRemoved    = false;
     this.reachedBorder      = false;
     this.img                = new window.Image();
-    this.img.src            = "../img/game/mystery_ship.png";
+    this.img.src            = "img/game/mystery_ship.png";
 }
 
 /**
@@ -140,7 +140,7 @@ function ExplodedMysteryShip(position, points) {
     this.width              = 35;
     this.height             = 25;
     this.img                = new window.Image();
-    this.img.src            = "../img/game/alien_explode.png";
+    this.img.src            = "img/game/alien_explode.png";
     this.timer              = 70;
 }
 

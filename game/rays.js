@@ -31,9 +31,9 @@ function Rays(cannons, aliens, cities) {
     this.cities = cities;
     this.rays = [];
     this.groundExplosions = [];
-    this.alienRay = new Audio("../sound/alien_missile.wav");
+    this.alienRay = new Audio("sound/alien_missile.wav");
     this.alienRay.volume = 0.3;
-    this.groundExplosion = new Audio("../sound/ground_explosion.wav");
+    this.groundExplosion = new Audio("sound/ground_explosion.wav");
 }
 
 /**

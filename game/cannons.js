@@ -41,9 +41,9 @@ Cannons.prototype = {
      * @return {void}
      */
     start: function(height) {
-        this.cannons.push(new Cannon(new Vector(150, height-128), this.aliens, this.cities, this.mysteryShips));
-        this.cannons.push(new Cannon(new Vector(10, height-40), this.aliens, this.cities, this.mysteryShips));
-        this.cannons.push(new Cannon(new Vector(70, height-40), this.aliens, this.cities, this.mysteryShips));
+        this.cannons.push(new Cannon(new Vector(150, height-105), this.aliens, this.cities, this.mysteryShips));
+        this.cannons.push(new Cannon(new Vector(10, height-35), this.aliens, this.cities, this.mysteryShips));
+        this.cannons.push(new Cannon(new Vector(70, height-35), this.aliens, this.cities, this.mysteryShips));
     },
 
     /**
@@ -81,12 +81,12 @@ Cannons.prototype = {
                     this.cannons.shift();
                     if (this.cannons.length > 1) {
                         this.cannons[0].position.x = 150;
-                        this.cannons[0].position.y = 750-128;
+                        this.cannons[0].position.y = 650-105;
                         this.cannons[1].position.x = 10;
-                        this.cannons[1].position.y = 750-40;
+                        this.cannons[1].position.y = 650-35;
                     } else if (this.cannons.length > 0) {
                         this.cannons[0].position.x = 150;
-                        this.cannons[0].position.y = 750-128;
+                        this.cannons[0].position.y = 650-105;
                     }
                     this.timer = 180;
                 }

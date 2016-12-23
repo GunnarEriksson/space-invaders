@@ -16,7 +16,7 @@
 function Cities() {
     this.cityCanvas = null;
     this.cityCt = null;
-    this.posY = 580;
+    this.posY = 55;
     this.height = 55;
     this.cities = [];
 }
@@ -43,7 +43,7 @@ Cities.prototype = {
 
         var posX = 130;
         for (var i = 0; i < 4; i++) {
-            this.cities.push(new City(this.cityCt, new Vector(posX, 55)));
+            this.cities.push(new City(this.cityCt, new Vector(posX, this.posY)));
             posX += 200;
         }
 

@@ -23,6 +23,7 @@ function Intro(canvas, status) {
     this.canvas = canvas;
     this.status = status;
     canvas.addEventListener("click", this.checkStart.bind(this), false);
+    canvas.addEventListener("click", this.checkHighScores.bind(this), false);
     canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
     this.mysteryPoints          = [" ", "=", " ", "?", " ", "M", "Y", "S", "T", "E", "R", "Y"];
     this.alien1                 = [" ", "=", " ", "3", "0", " ", "P", "O", "I", "N", "T", "S"];
@@ -36,9 +37,9 @@ function Intro(canvas, status) {
     this.isHoverOverStart       = false;
     this.isHooverOverHighScore  = false;
     this.mysteryShipImg         = new window.Image();
-    this.mysteryShipImg.src     = "../img/game/mystery_ship.png";
+    this.mysteryShipImg.src     = "img/game/mystery_ship.png";
     this.alienImg               = new window.Image();
-    this.alienImg.src           = "../img/game/space_invaders.png";
+    this.alienImg.src           = "img/game/space_invaders.png";
 }
 
 /**
@@ -133,6 +134,21 @@ Intro.prototype = {
 
         if (isIntersect(pos.x, pos.y, 1, 1, 403, 560, 125, 20)) {
             this.status.gameStatus = "game";
+        }
+    },
+
+    /**
+     * Checks if the text "HIGH SCORES" is clicked to show the high scores.
+     *
+     * @param  {Object} event  - the click event.
+     *
+     * @return {Void}
+     */
+    checkHighScores: function(event) {
+        var pos = this.getMousePos(event);
+
+        if (isIntersect(pos.x, pos.y, 1, 1, 390, 602, 160, 20)) {
+            this.status.gameStatus = "highScore";
         }
     },
 

@@ -24,9 +24,9 @@ function Beams(cannons, aliens, cities) {
     this.cities = cities;
     this.beams = [];
     this.groundExplosions = [];
-    this.alienMissile = new Audio("../sound/alien_missile.wav");
+    this.alienMissile = new Audio("sound/alien_missile.wav");
     this.alienMissile.volume = 0.3;
-    this.groundExplosion = new Audio("../sound/ground_explosion.wav");
+    this.groundExplosion = new Audio("sound/ground_explosion.wav");
 }
 
 /**

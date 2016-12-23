@@ -21,7 +21,7 @@ function GroundExplosion(position) {
     this.width              = 18;
     this.height             = 10;
     this.img                = new window.Image();
-    this.img.src            = "../img/game/ground_explosion.png";
+    this.img.src            = "img/game/ground_explosion.png";
     this.timer              = 15;
 }
 
@@ -70,7 +70,7 @@ function AirExplosion(position) {
     this.width              = 24;
     this.height             = 24;
     this.img                = new window.Image();
-    this.img.src            = "../img/game/air_explosion.png";
+    this.img.src            = "img/game/air_explosion.png";
     this.timer              = 15;
 }
 

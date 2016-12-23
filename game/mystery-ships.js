@@ -24,8 +24,8 @@ function MysteryShips(score) {
     this.aliensDirection        = null;
     this.timer                  = null;
     this.moveSoundVersion       = null;
-    this.mysteryShipExplosion   = new Audio("../sound/alien_explosion.wav");
-    this.shipMoveSound          = new Audio("../sound/ufo_highpitch.wav");
+    this.mysteryShipExplosion   = new Audio("sound/alien_explosion.wav");
+    this.shipMoveSound          = new Audio("sound/ufo_highpitch.wav");
 }
 
 /**
@@ -103,9 +103,9 @@ function MysteryShips(score) {
         if (this.timer === 0) {
             var direction = Guer.random(0, 1);
             if (direction > 0) {
-                this.mysteryShips.push(new MysteryShip(new Vector(850, 110), "left"));
+                this.mysteryShips.push(new MysteryShip(new Vector(850, 90), "left"));
             } else {
-                this.mysteryShips.push(new MysteryShip(new Vector(15, 110), "right"));
+                this.mysteryShips.push(new MysteryShip(new Vector(15, 90), "right"));
             }
 
             this.timer = Guer.random(1600, 1900);
