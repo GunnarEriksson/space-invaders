@@ -171,7 +171,7 @@ HighScore.prototype = {
     checkPlayGame: function(event) {
         var pos = this.getMousePos(event);
 
-        if (isIntersect(pos.x, pos.y, 1, 1, 403, 560, 125, 20)) {
+        if (isIntersect(pos.x, pos.y, 1, 1, 387, 524, 127, 20)) {
             this.removeListeners();
             this.status.setGameStatus("game");
         }
@@ -216,7 +216,7 @@ HighScore.prototype = {
      * @return {Void}
      */
     hooverOverPlayGame: function(ax, ay) {
-        if (isIntersect(ax, ay, 1, 1, 403, 560, 125, 20)) {
+        if (isIntersect(ax, ay, 1, 1, 387, 524, 127, 20)) {
             this.isHoverOverStart = true;
         } else {
             this.isHoverOverStart = false;

@@ -91,7 +91,7 @@ Missile.prototype = {
      * @return {void}
      */
     stayInArea: function() {
-        if (this.position.y < 100) {
+        if (this.position.y < 80) {
             this.shouldBeRemoved = true;
         }
     }

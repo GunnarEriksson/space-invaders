@@ -246,25 +246,104 @@ GameOver.prototype = {
 
     /**
      * Adding a character from the keyboard to the name array. If the character
-     * is back space (char code 8). The last character is removed from the array.
+     * is back space or delete, the last character is removed from the array.
+     * Valid characters are space, numbers, uppercase and lowercase letters
+     *
+     * Uses the event key property if the browser supports the property, else
+     * the keyCode property is choosen.
      *
      * @param {Object} event - the key pressed event.
      *
      * @return {Void}
      */
     addCharacter: function(event) {
+        if (event.key !== undefined) {
+            this.addCharUsingKey(event.key);
+        } else if (event.keyCode !== undefined) {
+            this.addCharUsingKeyCode(event.keyCode);
+        }
+    },
+
+    /**
+     * Uses the event key property to adds or remove a character to the name array.
+     * Supported characters in the name array is space, numbers, uppercase and
+     * lowercase letters.
+     *
+     * Backspace and Delete removes the last character. Prevents the default
+     * action of the space button to prevent the button to move the game board.
+     *
+     * @param {String} key - the character of the pushed keyboard button.
+     *
+     * @return {void}
+     */
+    addCharUsingKey: function(key) {
+        var letterNumber = /^[0-9a-zA-Z]+$/;
+        if ((key.match(letterNumber)) || (key === "å") || (key === "Å") || (key === "ä")
+            || (key === "Ä") || (key === "ö") || (key === "Ö") || (key === "Delete")
+            || (key === "Backspace") || (key === " ")) {
+            if ((key === "Delete") || (key === "Backspace")) {
+                this.name.pop();
+                event.preventDefault();
+            } else {
+                if (key.length === 1)
+                this.name.push(key);
+
+                if (key === " ") {
+                    event.preventDefault();
+                }
+            }
+        }
+    },
+
+    /**
+     * Uses the event key code property to adds or remove a character to the name
+     * array. Supported characters in the name array is space, numbers, uppercase
+     * and lowercase letters.
+     *
+     * Backspace and Delete removes the last character. Prevents the default
+     * action of the space button to prevent the button to move the game board.
+     *
+     * @param  {Object}  event - The event object.
+     *
+     * @return {void}
+     */
+    addCharUsingKeyCode: function(event) {
         var keyCode = event.keyCode;
         if ((keyCode === 8) || (keyCode === 32) || (keyCode === 46) || (keyCode > 47 && keyCode < 58)
-            || (keyCode > 64 && keyCode < 91) || (keyCode > 96 && keyCode < 123) || (keyCode === 134)
-            || (keyCode === 143) || (keyCode === 132) || (keyCode === 142) || (keyCode === 148)
-            || (keyCode === 153)) {
+            || (keyCode > 64 && keyCode < 91) || (keyCode === 192) || (keyCode === 221) || (keyCode === 222)) {
+
             if (keyCode === 8 || keyCode === 46) {
                 if (this.name.length > 0) {
                     this.name.pop();
                     event.preventDefault();
                 }
             } else {
-                this.name.push(String.fromCharCode(keyCode));
+                if ((keyCode > 64 && keyCode < 91) || (keyCode === 192) || (keyCode === 221) || (keyCode === 222)) {
+
+                    if (keyCode === 192) {
+                        keyCode = 214;
+                    }
+
+                    if (keyCode === 221) {
+                        keyCode = 197;
+                    }
+
+                    if (keyCode === 222) {
+                        keyCode = 196;
+                    }
+
+                    if (event.shiftKey) {
+                        this.name.push(String.fromCharCode(keyCode));
+                    } else {
+                        this.name.push(String.fromCharCode(keyCode + 32));
+                    }
+                } else {
+                    this.name.push(String.fromCharCode(keyCode));
+                }
+
+                if (keyCode === 32) {
+                    event.preventDefault();
+                }
             }
         }
     },
@@ -289,7 +368,6 @@ GameOver.prototype = {
             },
             dataType: 'json',
             success: function(data) {
-                console.log("The result: " + data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log('Ajax request failed: ' + textStatus + ', ' + errorThrown);
@@ -303,7 +381,7 @@ GameOver.prototype = {
      * @return {Void}
      */
     removeListeners: function() {
-        window.removeEventListener('keypress', this.addCharacter.bind(this), false);
+        window.removeEventListener('keydown', this.addCharacter.bind(this), false);
         this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
         this.canvas.addEventListener("click", this.checkContinue.bind(this), false);
         this.canvas.addEventListener("click", this.checkSavePlayer.bind(this), false);
