@@ -40,6 +40,21 @@ function getHighScoreListFromDB()
     return array("scoreList" => $highScore);
 }
 
+function addResultInDB($name, $score)
+{
+    $res = [];
+    try {
+        $db = connectToDb();
+        $sql = "INSERT INTO si_high_score (name, score) VALUES (?, ?)";
+        $params = [$name, $score];
+        $res = sendQueryToDb($db, $sql, PDO::FETCH_ASSOC, $params);
+    } catch (PDOException $exception) {
+        log("Exception when getting high score value: " . $exception);
+    }
+
+    return $res;
+}
+
 $data = null;
 
 // Get incoming on what to do
@@ -51,6 +66,12 @@ if ($action == 'getHighScore') {
 
 if ($action == 'getHighScoreList') {
     $data = getHighScoreListFromDB();
+}
+
+if ($action == 'addResult') {
+    $name = $_POST['name'];
+    $score = $_POST['score'];
+    $data = addResultInDB($name, $score);
 }
 
 // Print out the content of the shopping cart

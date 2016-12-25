@@ -22,9 +22,6 @@
 function Intro(canvas, status) {
     this.canvas = canvas;
     this.status = status;
-    canvas.addEventListener("click", this.checkStart.bind(this), false);
-    canvas.addEventListener("click", this.checkHighScores.bind(this), false);
-    canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
     this.mysteryPoints          = [" ", "=", " ", "?", " ", "M", "Y", "S", "T", "E", "R", "Y"];
     this.alien1                 = [" ", "=", " ", "3", "0", " ", "P", "O", "I", "N", "T", "S"];
     this.alien2                 = [" ", "=", " ", "2", "0", " ", "P", "O", "I", "N", "T", "S"];
@@ -48,6 +45,20 @@ function Intro(canvas, status) {
  * @type {Object}
  */
 Intro.prototype = {
+    start: function() {
+        this.timer                  = 0;
+        this.mysteryShipIndex       = 0;
+        this.alien1Index            = 0;
+        this.alien2Index            = 0;
+        this.alien3Index            = 0;
+        this.isHoverOverStart       = false;
+        this.isHooverOverHighScore  = false;
+
+        canvas.addEventListener("click", this.checkPlayGame.bind(this), false);
+        canvas.addEventListener("click", this.checkHighScores.bind(this), false);
+        canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
+    },
+
     /**
      * Draws the aliens and the text letter by letter with a delay between the
      * letters.
@@ -58,7 +69,7 @@ Intro.prototype = {
      */
     draw: function(ct) {
         ct.save();
-        ct.translate(980 / 2, 200);
+        ct.translate(980 / 2, 160);
         ct.font = "140px impact";
         ct.fillStyle = '#fff';
         ct.fillText('SPACE', -190, 0, 300);
@@ -72,39 +83,39 @@ Intro.prototype = {
         ct.fillStyle = "#fff";
 
         if (this.timer > 50) {
-            ct.drawImage(this.mysteryShipImg, -135, 150, 35, 15);
-            this.mysteryShipIndex = showTextLetterByLetter(ct, this.timer, this.mysteryShipIndex, this.mysteryPoints, -90, 163, 15);
+            ct.drawImage(this.mysteryShipImg, -155, 125, 35, 15);
+            this.mysteryShipIndex = showTextLetterByLetter(ct, this.timer, this.mysteryShipIndex, this.mysteryPoints, -110, 140, 15);
         }
 
         if (this.timer > 170) {
-            ct.drawImage(this.alienImg, 76, 31, 21, 24, -130, 180, 21, 24);
-            this.alien1Index = showTextLetterByLetter(ct, this.timer, this.alien1Index, this.alien1, -90, 200, 15);
+            ct.drawImage(this.alienImg, 76, 31, 21, 24, -150, 160, 21, 24);
+            this.alien1Index = showTextLetterByLetter(ct, this.timer, this.alien1Index, this.alien1, -110, 180, 15);
         }
 
         if (this.timer > 290) {
-            ct.drawImage(this.alienImg, 6, 31, 27, 24, -130, 220, 27, 24);
-            this.alien2Index = showTextLetterByLetter(ct, this.timer, this.alien2Index, this.alien2, -90, 240, 15);
+            ct.drawImage(this.alienImg, 6, 31, 27, 24, -150, 200, 27, 24);
+            this.alien2Index = showTextLetterByLetter(ct, this.timer, this.alien2Index, this.alien2, -110, 220, 15);
         }
 
         if (this.timer > 410) {
-            ct.drawImage(this.alienImg, 56, 5, 32, 24, -130, 260, 32, 24);
-            this.alien3Index = showTextLetterByLetter(ct, this.timer, this.alien3Index, this.alien3, -90, 280, 15);
+            ct.drawImage(this.alienImg, 56, 5, 32, 24, -150, 240, 32, 24);
+            this.alien3Index = showTextLetterByLetter(ct, this.timer, this.alien3Index, this.alien3, -110, 260, 15);
         }
 
         if (this.isHoverOverStart) {
             ct.fillStyle = "rgb(79, 255, 48)";
-            ct.fillText('PLAY GAME', -90, 380, 300);
+            ct.fillText('PLAY GAME', -105, 380);
         } else {
             ct.fillStyle = "#fff";
-            ct.fillText('PLAY GAME', -90, 380, 300);
+            ct.fillText('PLAY GAME', -105, 380);
         }
 
         if (this.isHooverOverHighScore) {
             ct.fillStyle = "rgb(79, 255, 48)";
-            ct.fillText('HIGH SCORES', -103, 420, 300);
+            ct.fillText('HIGH SCORES', -118, 420);
         } else {
             ct.fillStyle = "#fff";
-            ct.fillText('HIGH SCORES', -103, 420, 300);
+            ct.fillText('HIGH SCORES', -118, 420);
         }
 
         ct.restore();
@@ -129,11 +140,12 @@ Intro.prototype = {
      *
      * @return {Void}
      */
-    checkStart: function(event) {
+    checkPlayGame: function(event) {
         var pos = this.getMousePos(event);
 
-        if (isIntersect(pos.x, pos.y, 1, 1, 403, 560, 125, 20)) {
-            this.status.gameStatus = "game";
+        if (isIntersect(pos.x, pos.y, 1, 1, 388, 524, 125, 20)) {
+            this.removeListeners();
+            this.status.setGameStatus("game");
         }
     },
 
@@ -147,8 +159,9 @@ Intro.prototype = {
     checkHighScores: function(event) {
         var pos = this.getMousePos(event);
 
-        if (isIntersect(pos.x, pos.y, 1, 1, 390, 602, 160, 20)) {
-            this.status.gameStatus = "highScore";
+        if (isIntersect(pos.x, pos.y, 1, 1, 374, 563, 160, 20)) {
+            this.removeListeners();
+            this.status.setGameStatus("highScore");
         }
     },
 
@@ -163,7 +176,7 @@ Intro.prototype = {
     mouseMove: function(event) {
         var pos = this.getMousePos(event);
 
-        this.hooverOverStartGame(pos.x, pos.y);
+        this.hooverOverPlayGame(pos.x, pos.y);
         this.hooverOverHighScore(pos.x, pos.y);
     },
 
@@ -184,15 +197,15 @@ Intro.prototype = {
     },
 
     /**
-     * Checks if the mouse is hoovering over the text "HIGH SCORES".
+     * Checks if the mouse is hoovering over the text "PLAY GAME".
      *
      * @param  {Integer} ax - the position in x led for the mouse on canvas.
      * @param  {Integer} ay - the position in y led for the mouse on canvas.
      *
      * @return {Void}
      */
-    hooverOverStartGame: function(ax, ay) {
-        if (isIntersect(ax, ay, 1, 1, 403, 560, 125, 20)) {
+    hooverOverPlayGame: function(ax, ay) {
+        if (isIntersect(ax, ay, 1, 1, 388, 524, 125, 20)) {
             this.isHoverOverStart = true;
         } else {
             this.isHoverOverStart = false;
@@ -200,7 +213,7 @@ Intro.prototype = {
     },
 
     /**
-     * Checks if the mouse is hoovering over the text "NEW GAME".
+     * Checks if the mouse is hoovering over the text "HIGH SCORE".
      *
      * @param  {Integer} ax - the position in x led for the mouse on canvas.
      * @param  {Integer} ay - the position in y led for the mouse on canvas.
@@ -208,10 +221,21 @@ Intro.prototype = {
      * @return {Void}
      */
     hooverOverHighScore: function(ax, ay) {
-        if (isIntersect(ax, ay, 1, 1, 390, 602, 160, 20)) {
+        if (isIntersect(ax, ay, 1, 1, 374, 563, 160, 20)) {
             this.isHooverOverHighScore = true;
         } else {
             this.isHooverOverHighScore = false;
         }
+    },
+
+    /**
+     * Removes all event listeners created when the file was started (initiated).
+     *
+     * @return {Void}
+     */
+    removeListeners: function() {
+        canvas.removeEventListener("mousemove", this.mouseMove.bind(this), false);
+        canvas.removeEventListener("click", this.checkHighScores.bind(this), false);
+        canvas.removeEventListener("click", this.checkPlayGame.bind(this), false);
     }
 };

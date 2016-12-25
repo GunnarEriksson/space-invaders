@@ -65,15 +65,6 @@ Beams.prototype = {
      * alien that fires the beam. Only aliens without an another alien below
      * could fire a beam.
      *
-     * @return {void}
-     */
-
-    /**
-     * Fires a beam by creating a beam and store the beam in the array
-     * of beams. The beams are fired with an delay and it is a randomly choosen
-     * alien that fires the beam. Only aliens without an another alien below
-     * could fire a beam.
-     *
      * @param  {Objecy} alien - the alien object.
      * @return {void}
      */

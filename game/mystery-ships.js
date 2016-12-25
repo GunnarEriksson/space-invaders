@@ -33,7 +33,8 @@ function MysteryShips(score) {
  * mystery ships.
  *
  * @type {Object}
- */MysteryShips.prototype = {
+ */
+MysteryShips.prototype = {
     start: function() {
         this.mysteryShips           = [];
         this.explodedMysteryShips   = [];
@@ -78,13 +79,6 @@ function MysteryShips(score) {
         return false;
     },
 
-    /**
-     * Updates all aliens. Removes aliens that have been hit by a missile from
-     * the array of aliens. Plays an sound of explosion when an alien is hit.
-     * Sets the dirction of all aliens and updates the beams fired by the aliens.
-     *
-     * @return {void}
-     */
     /**
      * Decreases a time, set by a random value, to check if a mystery ship should
      * be created an started. The direction of the ship is randomly choosen.

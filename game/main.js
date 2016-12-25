@@ -99,8 +99,50 @@ window.Key = {
 window.addEventListener('keyup',   function(event) { Key.onKeyup(event); },   false);
 window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
 
+/**
+ * Controls the status of the game (intro, game, gameOver or highScore). Is the
+ * state machine of the game.
+ *
+ * @param {String} status - the status of the game.
+ */
 function Status(status) {
     this.gameStatus = status;
+}
+
+/**
+ * The prototype of the status describing the characteristics of the status.
+ *
+ * @type {Object}
+ */
+Status.prototype = {
+    /**
+     * Sets the game status of the game. Used when switching state of the game.
+     *
+     * @param {String} gameStatus - the next status of the game (intro, game,
+     *                              gameOver or highScore).
+     *
+     * @return {void}
+     */
+    setGameStatus: function(gameStatus) {
+        this.gameStatus = gameStatus;
+        console.log("Game Status: " + this.gameStatus);
+    },
+
+    /**
+     * Checks the game status of the game.
+     *
+     * @param  {String}  gameStatus - the game status.
+     *
+     * @return {Boolean}            - true if the game status is according to the
+     *                                in parameter, false otherwise.
+     */
+    isGameStatus: function(gameStatus) {
+        if (this.gameStatus === gameStatus) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 
@@ -158,10 +200,23 @@ Score.prototype = {
         ct.restore();
     },
 
+    /**
+     * Adds increases the score.
+     *
+     * @param {Integer} score - the score to increase the score with.
+     *
+     * @return {void}
+     */
     addScore: function(score) {
         this.score += score;
     },
 
+    /**
+     * Gets the highest score from the high score list in the database. Using
+     * Ajax and Json to send the request to the server side.
+     *
+     * @return {Void}
+     */
     getHighScore: function() {
         var that = this;
 
@@ -186,7 +241,7 @@ Score.prototype = {
 window.SpaceInvaders = (function() {
     var ct, cannons, lastGameTick, aliens, isCannonPresent, isAliensPresent, ground, cities, mysteryShips, score, intro;
     var width, height;
-    var gameOver, status, isNewGame, highScore, isInitHighScore, isInitGameOver;
+    var gameOver, status, isNewGame, highScore, isInitHighScore, isInitGameOver, isInitIntro;
 
     /**
      * Initiates the game.
@@ -202,7 +257,7 @@ window.SpaceInvaders = (function() {
         height = 650;
         status = new Status("intro");
         intro = new Intro(canvas, status);
-        gameOver = new GameOver(canvas);
+        gameOver = new GameOver(canvas, status);
         highScore = new HighScore(canvas, status);
         score = new Score();
         cities = new Cities(ct);
@@ -213,6 +268,7 @@ window.SpaceInvaders = (function() {
         isNewGame = true;
         isInitHighScore = true;
         isInitGameOver = true;
+        isInitIntro = true;
 
 
         console.log('Init the game');
@@ -234,7 +290,7 @@ window.SpaceInvaders = (function() {
     };
 
     /**
-     * Updates the game and check if the game is over or not.
+     * Updates the game according to the game status.
      *
      * @param  {Object}  ct - The canvas context.
      *
@@ -242,7 +298,8 @@ window.SpaceInvaders = (function() {
      */
     var update = function(td) {
 
-        if (status.gameStatus === "game") {
+        if (status.isGameStatus("game")) {
+            isInitIntro = true;
             isInitHighScore = true;
             isInitGameOver = true;
             if (isNewGame) {
@@ -264,24 +321,30 @@ window.SpaceInvaders = (function() {
                     mysteryShips.update();
                 }
             } else {
-                status.gameStatus = "gameOver";
+                status.setGameStatus("gameOver");
             }
-        } else if (status.gameStatus === "intro") {
-            isInitHighScore = true;
-            isInitGameOver = true;
+        } else if (status.isGameStatus("intro")) {
+            if (isInitIntro) {
+                intro.start();
+                isInitIntro = false;
+                isInitHighScore = true;
+                isInitGameOver = true;
+            }
             intro.update();
-        } else if (status.gameStatus === "gameOver") {
+        } else if (status.isGameStatus("gameOver")) {
             if (isInitGameOver) {
                 gameOver.init(score.score);
                 isInitGameOver = false;
+                isInitIntro = true;
                 isNewGame = true;
                 isInitHighScore = true;
             }
             gameOver.update();
-        } else if (status.gameStatus === "highScore") {
+        } else if (status.isGameStatus("highScore")) {
             if (isInitHighScore) {
                 highScore.start();
                 isInitHighScore = false;
+                isInitIntro = true;
                 isInitGameOver = true;
             }
             highScore.update();
@@ -289,28 +352,28 @@ window.SpaceInvaders = (function() {
     };
 
     /**
-     * Renders the game or the result of the game if the game is over.
+     * Renders the game according to the game status.
      *
      * @return {void}
      */
     var render = function() {
         ct.clearRect(0, 0, width, height);
-        if (status.gameStatus === "game") {
+        if (status.isGameStatus("game")) {
             ct.drawImage(cities.cityCanvas, 0, 452);
             ground.draw(ct);
             mysteryShips.draw(ct);
             cannons.draw(ct);
             aliens.draw(ct);
             score.draw(ct);
-        } else if (status.gameStatus === "intro") {
+        } else if (status.isGameStatus("intro")) {
             intro.draw(ct);
-        } else if (status.gameStatus === "gameOver") {
+        } else if (status.isGameStatus("gameOver")) {
             ct.drawImage(cities.cityCanvas, 0, 452);
             ground.draw(ct);
             cannons.draw(ct);
             score.draw(ct);
             gameOver.draw(ct);
-        } else if (status.gameStatus === "highScore") {
+        } else if (status.isGameStatus("highScore")) {
             highScore.draw(ct);
         }
     };

@@ -7,8 +7,6 @@
 function HighScore(canvas, status) {
     this.canvas = canvas;
     this.status = status;
-    canvas.addEventListener("click", this.checkStart.bind(this), false);
-    canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
     this.isHoverOverStart       = false;
 
     // Mystery ship
@@ -23,11 +21,33 @@ function HighScore(canvas, status) {
     this.highScoreList      = null;
 }
 
+/**
+ * The prototype of the high score describing the characteristics of the high
+ * score.
+ *
+ * @type {Object}
+ */
 HighScore.prototype = {
+    /**
+     * Gets the first ten high scores on the high score list from the database.
+     * Adds the click and mouse move event listeners.
+     *
+     * @return {Void}
+     */
     start: function() {
         this.getHighScoreList();
+        canvas.addEventListener("click", this.checkPlayGame.bind(this), false);
+        canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
     },
 
+    /**
+     * Draws the high score list on the canvas. The mystery ship is cruising
+     * above the high score list.
+     *
+     * @param  {Object}  ct - The canvas context.
+     *
+     * @return {void}
+     */
     draw: function(ct) {
         ct.save();
         ct.translate(this.position.x, this.position.y);
@@ -36,37 +56,43 @@ HighScore.prototype = {
 
 
         ct.save();
-        ct.translate(980 / 2, 150);
+        ct.translate(980 / 2, 160);
 
         ct.font = "normal lighter 24px arcade, monospace";
         ct.fillStyle = "rgb(79, 255, 48)";
-        ct.fillText('NAME', -200, 0);
-        ct.fillText('SCORE', 200, 0);
+        ct.fillText('NAME', -200, -50);
+        ct.fillText('SCORE', 200, -50);
 
         ct.fillStyle = "#fff";
 
-        var xPos = 50;
+        var yPos = 0;
 
-        if (this.obj !== null) {
+        if (this.highScoreList !== null) {
             for(var i = 0; i < this.highScoreList.scoreList.length; i++) {
-                ct.fillText(i+1 + ".", -280, xPos);
-                ct.fillText(this.highScoreList.scoreList[i].name, -200, xPos);
-                ct.fillText(this.highScoreList.scoreList[i].score, 200, xPos);
-                xPos += 35;
+                ct.fillText(i+1 + ".", -280, yPos);
+                ct.fillText(this.highScoreList.scoreList[i].name, -200, yPos);
+                ct.fillText(this.highScoreList.scoreList[i].score, 200, yPos);
+                yPos += 35;
             }
         }
 
         if (this.isHoverOverStart) {
             ct.fillStyle = "rgb(79, 255, 48)";
-            ct.fillText('PLAY GAME', -90, 430);
+            ct.fillText('PLAY GAME', -105, 380);
         } else {
             ct.fillStyle = "#fff";
-            ct.fillText('PLAY GAME', -90, 430);
+            ct.fillText('PLAY GAME', -105, 380);
         }
 
         ct.restore();
     },
 
+    /**
+     * Gets the ten first high scores from the database using Ajax and Json.
+     * The result from the request is stored in the high score array.
+     *
+     * @return {Void}
+     */
     getHighScoreList: function() {
         var that = this;
 
@@ -101,6 +127,12 @@ HighScore.prototype = {
         this.position.x += 1 * this.velocity.x;
     },
 
+    /**
+     * Updates the move of the myster ship and controls that ship change direction
+     * when reaching the left or right border of the game board.
+     *
+     * @return {Void}
+     */
     update: function() {
         if (this.direction === "right") {
             this.moveRight();
@@ -129,20 +161,43 @@ HighScore.prototype = {
         }
     },
 
-    checkStart: function(event) {
+    /**
+     * Checks if the text "PLAY GAME" is clicked to play a new game.
+     *
+     * @param  {Object} event  - the click event.
+     *
+     * @return {Void}
+     */
+    checkPlayGame: function(event) {
         var pos = this.getMousePos(event);
 
         if (isIntersect(pos.x, pos.y, 1, 1, 403, 560, 125, 20)) {
-            this.status.gameStatus = "game";
+            this.removeListeners();
+            this.status.setGameStatus("game");
         }
     },
 
+    /**
+     * Checks if the mouse is moved and gets the position of the mouse on
+     * the canvas.
+     *
+     * @param  {Object} event - the mouse move event
+     *
+     * @return {Void}
+     */
     mouseMove: function(event) {
         var pos = this.getMousePos(event);
 
-        this.hooverOverStartGame(pos.x, pos.y);
+        this.hooverOverPlayGame(pos.x, pos.y);
     },
 
+    /**
+     * Gets the mouse position on the canvas in x and y led.
+     *
+     * @param  {Object} event - the mouse move event.
+     *
+     * @return {Void}
+     */
     getMousePos: function(event) {
         var rect = this.canvas.getBoundingClientRect();
 
@@ -152,11 +207,29 @@ HighScore.prototype = {
         };
     },
 
-    hooverOverStartGame: function(ax, ay) {
+    /**
+     * Checks if the mouse is hoovering over the text "PLAY GAME".
+     *
+     * @param  {Integer} ax - the position in x led for the mouse on canvas.
+     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     *
+     * @return {Void}
+     */
+    hooverOverPlayGame: function(ax, ay) {
         if (isIntersect(ax, ay, 1, 1, 403, 560, 125, 20)) {
             this.isHoverOverStart = true;
         } else {
             this.isHoverOverStart = false;
         }
     },
+
+    /**
+     * Removes all event listeners created when the file was started (initiated).
+     *
+     * @return {Void}
+     */
+    removeListeners: function() {
+        canvas.removeEventListener("mousemove", this.mouseMove.bind(this), false);
+        canvas.removeEventListener("click", this.checkPlayGame.bind(this), false);
+    }
 }
