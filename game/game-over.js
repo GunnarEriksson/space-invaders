@@ -31,7 +31,9 @@ function GameOver(canvas, status) {
     this.width                  = 2;
     this.height                 = 25;
     this.score                  = 0;
-    this.timer                  = 0;
+    this.timer                  = 60;
+    this.playGame               = false;
+    this.delay                  = 0;
     this.textIndex              = 0;
     this.subtextIndex           = 0;
     this.scoreIndex             = 0;
@@ -55,6 +57,8 @@ GameOver.prototype = {
      * @return {Void}
      */
     init: function(score) {
+        this.delay = 60;
+        this.playGame = false;
         console.log("Calling Game Over init function");
         this.score = score;
         this.name  = [];
@@ -135,6 +139,14 @@ GameOver.prototype = {
             this.timer++;
         }
 
+        if (this.playGame) {
+            if (this.delay > 0) {
+                this.delay--;
+            } else {
+                this.status.setGameStatus("highScore");
+            }
+        }
+
         this.cursorTimer = (this.cursorTimer + 1) % 60;
 
         if (this.cursorTimer > 30) {
@@ -153,14 +165,15 @@ GameOver.prototype = {
      * @return {Void}
      */
     checkSavePlayer: function(event) {
-        var pos = this.getMousePos(event);
-
-        if (isIntersect(pos.x, pos.y, 1, 1, 421, 333, 57, 20)) {
-            var arrayString = this.name.join();
-            var name = arrayString.replace (/,/g, "");
-            this.saveResultInList(name, this.score);
-            this.removeListeners();
-            this.status.setGameStatus("highScore");
+        if (this.playGame === false) {
+            var pos = this.getMousePos(event);
+            if (isIntersect(pos.x, pos.y, 1, 1, 421, 333, 57, 20)) {
+                var arrayString = this.name.join();
+                var name = arrayString.replace (/,/g, "");
+                this.saveResultInList(name, this.score);
+                this.removeListeners();
+                this.playGame = true;
+            }
         }
     },
 
@@ -258,9 +271,15 @@ GameOver.prototype = {
      */
     addCharacter: function(event) {
         if (event.key !== undefined) {
-            this.addCharUsingKey(event.key);
+            if ((event.key === "Delete") || (event.key === "Backspace") || (event.key === " ")) {
+                event.preventDefault();
+            }
+            this.addCharUsingKey(event);
         } else if (event.keyCode !== undefined) {
-            this.addCharUsingKeyCode(event.keyCode);
+            if ((event.keyCode === 8) || (event.keyCode === 32) || (event.keyCode === 46)) {
+                event.preventDefault();
+            }
+            this.addCharUsingKeyCode(event);
         }
     },
 
@@ -272,25 +291,24 @@ GameOver.prototype = {
      * Backspace and Delete removes the last character. Prevents the default
      * action of the space button to prevent the button to move the game board.
      *
-     * @param {String} key - the character of the pushed keyboard button.
+     * @param  {Object}  event - The event object.
      *
      * @return {void}
      */
-    addCharUsingKey: function(key) {
+    addCharUsingKey: function(event) {
+        var key = event.key;
         var letterNumber = /^[0-9a-zA-Z]+$/;
         if ((key.match(letterNumber)) || (key === "å") || (key === "Å") || (key === "ä")
             || (key === "Ä") || (key === "ö") || (key === "Ö") || (key === "Delete")
             || (key === "Backspace") || (key === " ")) {
+
             if ((key === "Delete") || (key === "Backspace")) {
-                this.name.pop();
-                event.preventDefault();
+                if (this.name.length > 0) {
+                    this.name.pop();
+                }
             } else {
                 if (key.length === 1)
                 this.name.push(key);
-
-                if (key === " ") {
-                    event.preventDefault();
-                }
             }
         }
     },
@@ -315,11 +333,9 @@ GameOver.prototype = {
             if (keyCode === 8 || keyCode === 46) {
                 if (this.name.length > 0) {
                     this.name.pop();
-                    event.preventDefault();
                 }
             } else {
                 if ((keyCode > 64 && keyCode < 91) || (keyCode === 192) || (keyCode === 221) || (keyCode === 222)) {
-
                     if (keyCode === 192) {
                         keyCode = 214;
                     }
@@ -339,10 +355,6 @@ GameOver.prototype = {
                     }
                 } else {
                     this.name.push(String.fromCharCode(keyCode));
-                }
-
-                if (keyCode === 32) {
-                    event.preventDefault();
                 }
             }
         }

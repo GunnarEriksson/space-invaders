@@ -35,6 +35,7 @@ function Cannon(position, aliens, cities, mysteryShips) {
     this.shouldBeRemoved        = false;
     this.cannonExplosionPlayed  = false;
     this.explodedVersion        = 0;
+    this.alienCapturesCannon    = false;
 
     this.cannonImg              = new window.Image();
     this.cannonImg.src          = "img/game/cannon.png";
@@ -196,6 +197,7 @@ Cannon.prototype = {
     aliensHitCannon: function() {
         if (this.aliens.aliensHitCannon(this.position)) {
             this.shouldBeRemoved = true;
+            this.alienCapturesCannon = true;
         }
     }
 };

@@ -65,6 +65,9 @@ Cannons.prototype = {
      * (game over). When a cannon is destroyd, a timer delays the moving of the
      * next cannon so an exploding cannon could be showed.
      *
+     * If the aliens reached the earth and capture (collides with) a cannon, all
+     * cannons are removed and the game is over.
+     *
      * @param  {[type]} td      - not used.
      * @param  {Integer} width  - the width of the game board.
      *
@@ -75,7 +78,9 @@ Cannons.prototype = {
         if (this.cannons.length > 0) {
             this.cannons[0].update(td, width);
 
-            if (this.cannons[0].shouldBeRemoved) {
+            if (this.cannons[0].alienCapturesCannon) {
+                this.cannons.length = 0;
+            } else if (this.cannons[0].shouldBeRemoved) {
                 this.timer--;
                 if (this.timer === 0) {
                     this.cannons.shift();

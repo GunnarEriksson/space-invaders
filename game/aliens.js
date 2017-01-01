@@ -21,10 +21,12 @@
  * @param {Object} score            - the object containing the score.
  * @param {Integer} gameBoardWidth  - the width of the game board.
  */
-function Aliens(cities, score, gameBoardWidth) {
+function Aliens(cities, score, gameBoardHeight, gameBoardWidth) {
     this.cities = cities;
     this.score = score;
     this.gameBoardWidth = gameBoardWidth;
+    this.gameBoardHeight = gameBoardHeight;
+    this.groundOffset = 105;
     this.aliens = null;
     this.explodedAliens = null;
     this.aliensDirection = null;
@@ -180,7 +182,9 @@ Aliens.prototype = {
                 this.aliens[j].newDirection = newDirection;
                 this.aliens[j].direction = newDirection;
                 posY = this.aliens[j].position.y;
-                this.aliens[j].position.y = posY + 50;
+                if ((posY + 50) < (this.gameBoardHeight - this.groundOffset)) {
+                    this.aliens[j].position.y = posY + 50;
+                }
             }
         }
     },

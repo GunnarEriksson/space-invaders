@@ -1,6 +1,17 @@
+
 <?php
+/**
+ * Database controller
+ *
+ * Handles the communication with the database. Returns the result in Json format.
+ */
 include("../incl/config.php");
 
+/**
+ * Gets the highest score from the high score list.
+ *
+ * @return integer  the highest score in the high score list.
+ */
 function getHighScoreFromDB()
 {
     $highScore;
@@ -18,12 +29,20 @@ function getHighScoreFromDB()
     return $highScore;
 }
 
-function getHighScoreListFromDB()
+/**
+ * Gets name and score from the high score list in the database.
+ *
+ * @param  integer $offset  the start position in the high score list.
+ * @param  integer $limit   the number of items to get from the list.
+ *
+ * @return object[]         the array of players and the related scores.
+ */
+function getHighScoreListFromDB($offset, $limit)
 {
     $res = [];
     try {
         $db = connectToDb();
-        $sql = "SELECT name, score FROM si_high_score ORDER BY score desc LIMIT 10";
+        $sql = "SELECT name, score FROM si_high_score ORDER BY score desc LIMIT $limit OFFSET $offset";
         $res = sendQueryToDb($db, $sql, PDO::FETCH_ASSOC);
     } catch (PDOException $exception) {
         log("Exception when getting high score value: " . $exception);
@@ -40,6 +59,14 @@ function getHighScoreListFromDB()
     return array("scoreList" => $highScore);
 }
 
+/**
+ * Adds a players name and score to the database.
+ *
+ * @param string $name      the name of the player.
+ * @param integer $score    the players score.
+ *
+ * @return void
+ */
 function addResultInDB($name, $score)
 {
     $res = [];
@@ -65,12 +92,14 @@ if ($action == 'getHighScore') {
 }
 
 if ($action == 'getHighScoreList') {
-    $data = getHighScoreListFromDB();
+    $offset = isset($_POST['offset']) ? $_POST['offset'] : 0;
+    $limit = isset($_POST['limit']) ? $_POST['limit'] : 10;
+    $data = getHighScoreListFromDB($offset, $limit);
 }
 
 if ($action == 'addResult') {
-    $name = $_POST['name'];
-    $score = $_POST['score'];
+    $name = isset($_POST['name']) ? $_POST['name'] : "Anonymous";
+    $score = isset($_POST['score']) ? $_POST['score'] : 0;
     $data = addResultInDB($name, $score);
 }
 

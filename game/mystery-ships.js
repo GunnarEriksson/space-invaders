@@ -24,6 +24,7 @@ function MysteryShips(score) {
     this.aliensDirection        = null;
     this.timer                  = null;
     this.moveSoundVersion       = null;
+    this.hitPoints              = 100;
     this.mysteryShipExplosion   = new Audio("sound/alien_explosion.wav");
     this.shipMoveSound          = new Audio("sound/ufo_highpitch.wav");
 }
@@ -115,9 +116,8 @@ MysteryShips.prototype = {
 
             if (this.mysteryShips[i].shouldBeRemoved) {
                 if (!this.mysteryShips[i].reachedBorder) {
-                    var points = Guer.random(40, 80);
-                    this.explodedMysteryShips.push(new ExplodedMysteryShip(new Vector(this.mysteryShips[i].position.x, this.mysteryShips[i].position.y), points));
-                    this.score.addScore(points);
+                    this.explodedMysteryShips.push(new ExplodedMysteryShip(new Vector(this.mysteryShips[i].position.x, this.mysteryShips[i].position.y), this.hitPoints));
+                    this.score.addScore(this.hitPoints);
                     this.mysteryShipExplosion.pause();
                     this.mysteryShipExplosion.currentTime = 0;
                     this.mysteryShipExplosion.play();
