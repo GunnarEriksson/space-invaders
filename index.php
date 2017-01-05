@@ -16,7 +16,7 @@ include(__DIR__ . "/incl/header.php");
     som dyker upp då och då, så får du extra poäng. När utomjordingarna har förstört
     alla dina kanoner eller har nått jorden är spelet över. Då kan du skriva in
     ditt namn och kanske hamna överst i poänglistan.</p>
-    <p>Hur du spelar spelet, visas under introduktionsrutan i menyn spel.</p>
+    <p>Hur du spelar spelet, visas under menyn Om.</p>
     <p>Lycka till!</p>
 </article>
 

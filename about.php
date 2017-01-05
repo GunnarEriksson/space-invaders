@@ -4,9 +4,20 @@ $title = "Hem | Space Invaders";
 include(__DIR__ . "/incl/header.php");
 ?>
 <article>
-    <h1>Om spelsidan</h1>
+    <h1>Om spelet</h1>
     <p>Det här är sidan för dig som gillar att spela det klassiska arkadspelet
     Space Invaders, som går ut på att hindra utomjordingarna att ta över jorden.</p>
+    <p>Du styr kanonen med vänster respektive höger piltangent. För att avfyra en
+    missil använder du mellanslag.</p>
+    <p>Det gäller att skjuta ned så många utomjordingar som möjligt innan dina tre
+    kanoner är förbrukade eller innan utomjordingarna har nått jorden. Du får olika
+    poäng beroende på vilket typ av utomjording du träffar med kanonens missiler.
+    Ju fler utomjordingar du träffar, desto snabbare rör sig utomjordingarna. När
+    de har nått vänster respektive höger kanten, flyttas utomjordingarna ned ett
+    steg. Det gäller för dig att hindra att utomjordingarna når jorden.</p>
+    <p>Det finns också ett rött mystiskt rymdskepp som då och då rör sig högt uppe
+    i rymden. Lyckas du skjuta ned rymdskeppet får du extra poäng.</p>
+    <p>Efter spelet är slut kan du skriva in ditt namn för att komma med i poänglistan.</p>
     <p>Spelet är ett avslutande projekt i kursen JavaScript, jQuery och AJAX med
     HTML5 och PHP (DV1483) som är den avslutande kursen i kurspaketet
     “Databaser, HTML, CSS, JavaScript och PHP” (30 hp) som ges av Blekinge
