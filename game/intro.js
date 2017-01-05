@@ -37,6 +37,9 @@ function Intro(canvas, status) {
     this.mysteryShipImg.src     = "img/game/mystery_ship.png";
     this.alienImg               = new window.Image();
     this.alienImg.src           = "img/game/space_invaders.png";
+    this.onMouseClickPlay       = this.checkPlayGame.bind(this);
+    this.onMouseClickHighScores = this.checkHighScores.bind(this);
+    this.onMouseMove            = this.mouseMove.bind(this);
 }
 
 /**
@@ -54,9 +57,9 @@ Intro.prototype = {
         this.isHoverOverStart       = false;
         this.isHooverOverHighScore  = false;
 
-        canvas.addEventListener("click", this.checkPlayGame.bind(this), false);
-        canvas.addEventListener("click", this.checkHighScores.bind(this), false);
-        canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
+        canvas.addEventListener("click", this.onMouseClickPlay, false);
+        canvas.addEventListener("click", this.onMouseClickHighScores, false);
+        canvas.addEventListener("mousemove", this.onMouseMove, false);
     },
 
     /**
@@ -234,8 +237,8 @@ Intro.prototype = {
      * @return {Void}
      */
     removeListeners: function() {
-        canvas.removeEventListener("mousemove", this.mouseMove.bind(this), false);
-        canvas.removeEventListener("click", this.checkHighScores.bind(this), false);
-        canvas.removeEventListener("click", this.checkPlayGame.bind(this), false);
+        canvas.removeEventListener("mousemove", this.onMouseMove, false);
+        canvas.removeEventListener("click", this.onMouseClickHighScores, false);
+        canvas.removeEventListener("click", this.onMouseClickPlay, false);
     }
 };

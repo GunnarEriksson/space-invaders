@@ -128,8 +128,10 @@ Cannon.prototype = {
             var gunPosX = this.position.x + 21;
             var gunPosY = this.position.y;
             this.missiles.fire(new Vector(gunPosX, gunPosY));
-            this.cannonMissile.pause();
-            this.cannonMissile.currentTime = 0;
+            if (this.cannonMissile.currentTime > 0) {
+                this.cannonMissile.pause();
+                this.cannonMissile.currentTime = 0;
+            }
             this.cannonMissile.play();
         }
     },

@@ -38,6 +38,12 @@ function HighScore(canvas, status) {
     this.arrowGreenRightImg     = new window.Image();
     this.arrowGreenRightImg.src = "img/game/arrow_green_right.png";
 
+    // Event listeners. Needed when removing event listner with binded functions.
+    this.onMouseClickPlay       = this.checkPlayGame.bind(this);
+    this.onMouseClickLeftArrow  = this.checkLeftArrow.bind(this);
+    this.onMouseClickRightArrow = this.checkRightArrow.bind(this);
+    this.onMouseMove            = this.mouseMove.bind(this);
+
 
 }
 
@@ -57,10 +63,10 @@ HighScore.prototype = {
     start: function() {
         this.highScoreOffset = 0;
         this.getHighScoreList(this.highScoreOffset, this.numItemHighScoreList + 1);
-        canvas.addEventListener("click", this.checkPlayGame.bind(this), false);
-        canvas.addEventListener("click", this.checkLeftArrow.bind(this), false);
-        canvas.addEventListener("click", this.checkRightArrow.bind(this), false);
-        canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
+        canvas.addEventListener("click", this.onMouseClickPlay, false);
+        canvas.addEventListener("click", this.onMouseClickLeftArrow, false);
+        canvas.addEventListener("click", this.onMouseClickRightArrow, false);
+        canvas.addEventListener("mousemove", this.onMouseMove, false);
     },
 
     /**
@@ -355,9 +361,9 @@ HighScore.prototype = {
      * @return {Void}
      */
     removeListeners: function() {
-        canvas.removeEventListener("mousemove", this.mouseMove.bind(this), false);
-        canvas.addEventListener("click", this.checkRightArrow.bind(this), false);
-        canvas.addEventListener("click", this.checkLeftArrow.bind(this), false);
-        canvas.removeEventListener("click", this.checkPlayGame.bind(this), false);
+        canvas.removeEventListener("mousemove", this.onMouseMove, false);
+        canvas.removeEventListener("click", this.onMouseClickRightArrow, false);
+        canvas.removeEventListener("click", this.onMouseClickLeftArrow, false);
+        canvas.removeEventListener("click", this.onMouseClickPlay, false);
     }
 }

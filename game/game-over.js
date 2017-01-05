@@ -31,9 +31,9 @@ function GameOver(canvas, status) {
     this.width                  = 2;
     this.height                 = 25;
     this.score                  = 0;
-    this.timer                  = 60;
+    this.timer                  = 0;
     this.playGame               = false;
-    this.delay                  = 0;
+    this.delay                  = 60;
     this.textIndex              = 0;
     this.subtextIndex           = 0;
     this.scoreIndex             = 0;
@@ -42,6 +42,10 @@ function GameOver(canvas, status) {
     this.isHoverOverSave        = false;
     this.isHoverOverContinue    = false;
     this.showCursor             = false;
+    this.onMouseClickSave       = this.checkSavePlayer.bind(this);
+    this.onMouseClickContinue   = this.checkContinue.bind(this);
+    this.onMouseMove            = this.mouseMove.bind(this);
+    this.onKeyDown              = this.addCharacter.bind(this);
 }
 
 /**
@@ -58,14 +62,16 @@ GameOver.prototype = {
      */
     init: function(score) {
         this.delay = 60;
+        this.timer = 0;
+        this.textIndex = 0;
+        this.subtextIndex = 0;
         this.playGame = false;
-        console.log("Calling Game Over init function");
         this.score = score;
         this.name  = [];
-        this.canvas.addEventListener("click", this.checkSavePlayer.bind(this), false);
-        this.canvas.addEventListener("click", this.checkContinue.bind(this), false);
-        this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
-        window.addEventListener('keydown', this.addCharacter.bind(this), false);
+        this.canvas.addEventListener("click", this.onMouseClickSave, false);
+        this.canvas.addEventListener("click", this.onMouseClickContinue, false);
+        this.canvas.addEventListener("mousemove", this.onMouseMove, false);
+        window.addEventListener('keydown', this.onKeyDown, false);
         this.showKeyDownLog = true;
         this.showKeyUpLog = true;
     },
@@ -270,6 +276,7 @@ GameOver.prototype = {
      * @return {Void}
      */
     addCharacter: function(event) {
+        console.log("Button down listener called.");
         if (event.key !== undefined) {
             if ((event.key === "Delete") || (event.key === "Backspace") || (event.key === " ")) {
                 event.preventDefault();
@@ -307,8 +314,9 @@ GameOver.prototype = {
                     this.name.pop();
                 }
             } else {
-                if (key.length === 1)
-                this.name.push(key);
+                if (key.length === 1) {
+                    this.name.push(key);
+                }
             }
         }
     },
@@ -353,7 +361,7 @@ GameOver.prototype = {
                     } else {
                         this.name.push(String.fromCharCode(keyCode + 32));
                     }
-                } else {
+                } else if ((keyCode > 47 && keyCode < 58)) {
                     this.name.push(String.fromCharCode(keyCode));
                 }
             }
@@ -393,9 +401,9 @@ GameOver.prototype = {
      * @return {Void}
      */
     removeListeners: function() {
-        window.removeEventListener('keydown', this.addCharacter.bind(this), false);
-        this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
-        this.canvas.addEventListener("click", this.checkContinue.bind(this), false);
-        this.canvas.addEventListener("click", this.checkSavePlayer.bind(this), false);
+        window.removeEventListener('keydown', this.onKeyDown, false);
+        this.canvas.removeEventListener("mousemove", this.onMouseMove, false);
+        this.canvas.removeEventListener("click", this.onMouseClickContinue, false);
+        this.canvas.removeEventListener("click", this.onMouseClickSave, false);
     }
 };

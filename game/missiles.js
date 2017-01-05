@@ -79,8 +79,10 @@ Missiles.prototype = {
             if (this.missiles[i].shouldBeRemoved) {
                 if (this.missiles[i].position.y < 130 || this.missiles[i].hitsBeam) {
                     this.airExplosions.push(new AirExplosion(new Vector(this.missiles[i].position.x, this.missiles[i].position.y)));
-                    this.airExplosion.pause();
-                    this.airExplosion.currentTime = 0;
+                    if (this.airExplosion.currentTime > 0) {
+                        this.airExplosion.pause();
+                        this.airExplosion.currentTime = 0;
+                    }
                     this.airExplosion.play();
                 }
 

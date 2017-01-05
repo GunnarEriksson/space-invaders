@@ -261,8 +261,10 @@ Aliens.prototype = {
             }
 
             if (this.aliens[i].shouldBeRemoved) {
-                this.alienMoveSoundHigh.pause();
-                this.alienMoveSoundHigh.currentTime = 0;
+                if (this.alienMoveSoundHigh.currentTime > 0) {
+                    this.alienMoveSoundHigh.pause();
+                    this.alienMoveSoundHigh.currentTime = 0;
+                }
                 this.alienMoveSoundHigh.play();
             }
 
@@ -272,8 +274,10 @@ Aliens.prototype = {
                 this.explodedAliens.push(new ExplodedAlien(new Vector(this.aliens[i].position.x, this.aliens[i].position.y)));
                 this.score.addScore(this.aliens[i].points);
                 this.aliens.splice(i, 1);
-                this.alienExplosion.pause();
-                this.alienExplosion.currentTime = 0;
+                if (this.alienExplosion.currentTime > 0) {
+                    this.alienExplosion.pause();
+                    this.alienExplosion.currentTime = 0;
+                }
                 this.alienExplosion.play();
             }
         }

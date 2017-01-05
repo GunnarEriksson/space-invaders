@@ -77,8 +77,10 @@ Rays.prototype = {
         var rayPosX = alien.position.x + ((alien.alienWidth / 2) - 3);
         var rayPosY = alien.position.y + alien.alienHeight;
         this.rays.push(new Ray(new Vector(rayPosX, rayPosY), this.cannons, this.aliens, this.cities));
-        this.alienRay.pause();
-        this.alienRay.currentTime = 0;
+        if (this.alienRay.currentTime > 0) {
+            this.alienRay.pause();
+            this.alienRay.currentTime = 0;
+        }
         this.alienRay.play();
     },
 
@@ -96,8 +98,10 @@ Rays.prototype = {
             if (this.rays[i].shouldBeRemoved) {
                 if (!this.rays[i].cannonHit) {
                     this.groundExplosions.push(new GroundExplosion(new Vector(this.rays[i].position.x, this.rays[i].position.y + 10)));
-                    this.groundExplosion.pause();
-                    this.groundExplosion.currentTime = 0;
+                    if (this.groundExplosion.currentTime > 0) {
+                        this.groundExplosion.pause();
+                        this.groundExplosion.currentTime = 0;
+                    }
                     this.groundExplosion.play();
                 }
 

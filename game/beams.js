@@ -72,8 +72,10 @@ Beams.prototype = {
         var beamPosX = alien.position.x + (alien.alienWidth / 2);
         var beamPosY = alien.position.y + alien.alienHeight;
         this.beams.push(new Beam(new Vector(beamPosX, beamPosY), this.cannons, this.aliens, this.cities));
-        this.alienMissile.pause();
-        this.alienMissile.currentTime = 0;
+        if (this.alienMissile.currentTime > 0) {
+            this.alienMissile.pause();
+            this.alienMissile.currentTime = 0;
+        }
         this.alienMissile.play();
     },
 
@@ -89,8 +91,10 @@ Beams.prototype = {
             if (this.beams[i].shouldBeRemoved) {
                 if (!this.beams[i].cannonHit) {
                     this.groundExplosions.push(new GroundExplosion(new Vector(this.beams[i].position.x, this.beams[i].position.y + 3)));
-                    this.groundExplosion.pause();
-                    this.groundExplosion.currentTime = 0;
+                    if (this.groundExplosion.currentTime > 0) {
+                        this.groundExplosion.pause();
+                        this.groundExplosion.currentTime = 0;
+                    }
                     this.groundExplosion.play();
                 }
 

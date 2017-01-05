@@ -118,8 +118,10 @@ MysteryShips.prototype = {
                 if (!this.mysteryShips[i].reachedBorder) {
                     this.explodedMysteryShips.push(new ExplodedMysteryShip(new Vector(this.mysteryShips[i].position.x, this.mysteryShips[i].position.y), this.hitPoints));
                     this.score.addScore(this.hitPoints);
-                    this.mysteryShipExplosion.pause();
-                    this.mysteryShipExplosion.currentTime = 0;
+                    if (this.mysteryShipExplosion.currentTime > 0) {
+                        this.mysteryShipExplosion.pause();
+                        this.mysteryShipExplosion.currentTime = 0;
+                    }
                     this.mysteryShipExplosion.play();
                 }
 
