@@ -10,6 +10,7 @@
 /*global GameOver */
 /*global Grounds */
 /*global Intro */
+/*global HighScore */
 /*global Key */
 /*global MysteryShips */
 /*global SpaceInvaders */
@@ -143,7 +144,7 @@ Status.prototype = {
             return false;
         }
     }
-}
+};
 
 
 /**

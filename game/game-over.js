@@ -387,7 +387,7 @@ GameOver.prototype = {
                 score: score
             },
             dataType: 'json',
-            success: function(data) {
+            success: function() {
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log('Ajax request failed: ' + textStatus + ', ' + errorThrown);

@@ -4,6 +4,9 @@
  * Shows ten high scores with the name of the owner of the high score.
  */
 
+ /*global Vector */
+ /*global isIntersect */
+
 function HighScore(canvas, status) {
     this.canvas = canvas;
     this.status = status;
@@ -63,10 +66,10 @@ HighScore.prototype = {
     start: function() {
         this.highScoreOffset = 0;
         this.getHighScoreList(this.highScoreOffset, this.numItemHighScoreList + 1);
-        canvas.addEventListener("click", this.onMouseClickPlay, false);
-        canvas.addEventListener("click", this.onMouseClickLeftArrow, false);
-        canvas.addEventListener("click", this.onMouseClickRightArrow, false);
-        canvas.addEventListener("mousemove", this.onMouseMove, false);
+        this.canvas.addEventListener("click", this.onMouseClickPlay, false);
+        this.canvas.addEventListener("click", this.onMouseClickLeftArrow, false);
+        this.canvas.addEventListener("click", this.onMouseClickRightArrow, false);
+        this.canvas.addEventListener("mousemove", this.onMouseMove, false);
     },
 
     /**
@@ -102,7 +105,7 @@ HighScore.prototype = {
                 numberOfItems = this.numItemHighScoreList;
             }
 
-            for(var i = 0; i < numberOfItems; i++) {
+            for (var i = 0; i < numberOfItems; i++) {
                 ct.fillText((i + this.highScoreOffset + 1) + ".", -280, yPos);
                 ct.fillText(this.highScoreList.scoreList[i].name, -200, yPos);
                 ct.fillText(this.highScoreList.scoreList[i].score, 200, yPos);
@@ -361,9 +364,9 @@ HighScore.prototype = {
      * @return {Void}
      */
     removeListeners: function() {
-        canvas.removeEventListener("mousemove", this.onMouseMove, false);
-        canvas.removeEventListener("click", this.onMouseClickRightArrow, false);
-        canvas.removeEventListener("click", this.onMouseClickLeftArrow, false);
-        canvas.removeEventListener("click", this.onMouseClickPlay, false);
+        this.canvas.removeEventListener("mousemove", this.onMouseMove, false);
+        this.canvas.removeEventListener("click", this.onMouseClickRightArrow, false);
+        this.canvas.removeEventListener("click", this.onMouseClickLeftArrow, false);
+        this.canvas.removeEventListener("click", this.onMouseClickPlay, false);
     }
-}
+};

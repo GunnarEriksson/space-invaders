@@ -1,10 +1,4 @@
-
 <?php
-/**
- * Database controller
- *
- * Handles the communication with the database. Returns the result in Json format.
- */
 include("../incl/config.php");
 
 /**
@@ -20,7 +14,7 @@ function getHighScoreFromDB()
         $db = connectToDb();
         $sql = "SELECT score FROM si_high_score ORDER BY score desc LIMIT 1";
         $res = sendQueryToDb($db, $sql, PDO::FETCH_ASSOC);
-        $highScore = $res[0]['score'];
+        $highScore = isset($res[0]['score']) ? $res[0]['score'] : 0;
     } catch (PDOException $exception) {
         $highScore = 0;
         log("Exception when getting high score value: " . $exception);

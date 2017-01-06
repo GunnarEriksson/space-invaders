@@ -57,9 +57,9 @@ Intro.prototype = {
         this.isHoverOverStart       = false;
         this.isHooverOverHighScore  = false;
 
-        canvas.addEventListener("click", this.onMouseClickPlay, false);
-        canvas.addEventListener("click", this.onMouseClickHighScores, false);
-        canvas.addEventListener("mousemove", this.onMouseMove, false);
+        this.canvas.addEventListener("click", this.onMouseClickPlay, false);
+        this.canvas.addEventListener("click", this.onMouseClickHighScores, false);
+        this.canvas.addEventListener("mousemove", this.onMouseMove, false);
     },
 
     /**
@@ -237,8 +237,8 @@ Intro.prototype = {
      * @return {Void}
      */
     removeListeners: function() {
-        canvas.removeEventListener("mousemove", this.onMouseMove, false);
-        canvas.removeEventListener("click", this.onMouseClickHighScores, false);
-        canvas.removeEventListener("click", this.onMouseClickPlay, false);
+        this.canvas.removeEventListener("mousemove", this.onMouseMove, false);
+        this.canvas.removeEventListener("click", this.onMouseClickHighScores, false);
+        this.canvas.removeEventListener("click", this.onMouseClickPlay, false);
     }
 };
