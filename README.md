@@ -31,7 +31,7 @@ folders should be included.
 
 To show the game, include the row in your webpage
 
-<canvas id="canvas" width="900" height="650"></canvas>
+    <canvas id="canvas" width="900" height="650"></canvas>
 
 If the width and height should be changed, the JavaScript code have to be
 updated as well.
