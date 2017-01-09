@@ -71,7 +71,7 @@ Rays.prototype = {
      *
      * @param  {Object} alien - the alien who fires the ray.
      *
-     * @return {Void}
+     * @return {void}
      */
     fire: function(alien) {
         var rayPosX = alien.position.x + ((alien.alienWidth / 2) - 3);
@@ -90,11 +90,13 @@ Rays.prototype = {
      * Controls via a timer how long the ground explosion should be present before
      * it is removed.
      *
-     * @return {Void}
+     * @param  {number}  td  - Time difference offset
+     *
+     * @return {void}
      */
-    update: function() {
+    update: function(td) {
         for (var i = this.rays.length -1; i >= 0; i--) {
-            this.rays[i].update();
+            this.rays[i].update(td);
             if (this.rays[i].shouldBeRemoved) {
                 if (!this.rays[i].cannonHit) {
                     this.groundExplosions.push(new GroundExplosion(new Vector(this.rays[i].position.x, this.rays[i].position.y + 10)));

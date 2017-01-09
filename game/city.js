@@ -38,7 +38,7 @@ City.prototype = {
     /**
      * Draws a cannon.
      *
-     * @return {Void}
+     * @return {void}
      */
     draw: function() {
         this.ct.save();
@@ -67,10 +67,10 @@ City.prototype = {
     /**
      * Generates damage after the city is hit by a missile.
      *
-     * @param  {Integer} x - the start position for the damage in x led.
-     * @param  {Integer} y - the start position for the damage in y led.
+     * @param  {number} x - the start position for the damage in x led.
+     * @param  {number} y - the start position for the damage in y led.
      *
-     * @return {Void}
+     * @return {void}
      */
     generateMissileDamage: function(x, y) {
 
@@ -89,10 +89,10 @@ City.prototype = {
     /**
      * Generates damage after the city is hit by a beam.
      *
-     * @param  {Integer} x - the start position for the damage in x led.
-     * @param  {Integer} y - the start position for the damage in y led.
+     * @param  {number} x - the start position for the damage in x led.
+     * @param  {number} y - the start position for the damage in y led.
      *
-     * @return {Void}
+     * @return {void}
      */
     generateBeamDamage: function(x, y) {
 
@@ -111,10 +111,10 @@ City.prototype = {
     /**
      * Generates damage after the city is hit by a ray.
      *
-     * @param  {Integer} x - the start position for the damage in x led.
-     * @param  {Integer} y - the start position for the damage in y led.
+     * @param  {number} x - the start position for the damage in x led.
+     * @param  {number} y - the start position for the damage in y led.
      *
-     * @return {Void}
+     * @return {void}
      */
     generateRayDamage: function(x, y) {
 
@@ -137,7 +137,7 @@ City.prototype = {
      *
      * @param  {Object} missile - the missile object with the characteristics.
      *
-     * @return {Void}
+     * @return {void}
      */
     missileHitsCity: function(missile) {
         var missilePosY = missile.position.y - this.canvasOffset;
@@ -158,7 +158,7 @@ City.prototype = {
      *
      * @param  {Object} beam - the beam object with the characteristics.
      *
-     * @return {Void}
+     * @return {void}
      */
     beamHitsCity: function(beam) {
         var beamPosY = beam.position.y - this.canvasOffset;
@@ -179,7 +179,7 @@ City.prototype = {
      *
      * @param  {Object} ray - the ray object with the characteristics.
      *
-     * @return {Void}
+     * @return {void}
      */
     rayHitsCity: function(ray) {
         var rayPosY = ray.position.y - this.canvasOffsetRay;

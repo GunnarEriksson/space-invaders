@@ -61,7 +61,7 @@ HighScore.prototype = {
      * Gets the first ten high scores on the high score list from the database.
      * Adds the click and mouse move event listeners.
      *
-     * @return {Void}
+     * @return {void}
      */
     start: function() {
         this.highScoreOffset = 0;
@@ -148,7 +148,7 @@ HighScore.prototype = {
      * Gets the ten first high scores from the database using Ajax and Json.
      * The result from the request is stored in the high score array.
      *
-     * @return {Void}
+     * @return {void}
      */
     getHighScoreList: function(offset, limit) {
         var that = this;
@@ -192,7 +192,7 @@ HighScore.prototype = {
      * Updates the move of the myster ship and controls that ship change direction
      * when reaching the left or right border of the game board.
      *
-     * @return {Void}
+     * @return {void}
      */
     update: function() {
         if (this.direction === "right") {
@@ -227,7 +227,7 @@ HighScore.prototype = {
      *
      * @param  {Object} event  - the click event.
      *
-     * @return {Void}
+     * @return {void}
      */
     checkPlayGame: function(event) {
         var pos = this.getMousePos(event);
@@ -243,7 +243,7 @@ HighScore.prototype = {
      *
      * @param  {Object} event  - the click event.
      *
-     * @return {Void}
+     * @return {void}
      */
     checkLeftArrow: function(event) {
         var pos = this.getMousePos(event);
@@ -262,7 +262,7 @@ HighScore.prototype = {
      *
      * @param  {Object} event  - the click event.
      *
-     * @return {Void}
+     * @return {void}
      */
     checkRightArrow: function(event) {
         var pos = this.getMousePos(event);
@@ -280,7 +280,7 @@ HighScore.prototype = {
      *
      * @param  {Object} event - the mouse move event
      *
-     * @return {Void}
+     * @return {void}
      */
     mouseMove: function(event) {
         var pos = this.getMousePos(event);
@@ -295,7 +295,7 @@ HighScore.prototype = {
      *
      * @param  {Object} event - the mouse move event.
      *
-     * @return {Void}
+     * @return {void}
      */
     getMousePos: function(event) {
         var rect = this.canvas.getBoundingClientRect();
@@ -309,10 +309,10 @@ HighScore.prototype = {
     /**
      * Checks if the mouse is hoovering over the text "PLAY GAME".
      *
-     * @param  {Integer} ax - the position in x led for the mouse on canvas.
-     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     * @param  {number} ax - the position in x led for the mouse on canvas.
+     * @param  {number} ay - the position in y led for the mouse on canvas.
      *
-     * @return {Void}
+     * @return {void}
      */
     hooverOverPlayGame: function(ax, ay) {
         if (isIntersect(ax, ay, 1, 1, 387, 524, 127, 20)) {
@@ -326,10 +326,10 @@ HighScore.prototype = {
      * Checks if the mouse is hoovering over the left arrow below the high score
      * list.
      *
-     * @param  {Integer} ax - the position in x led for the mouse on canvas.
-     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     * @param  {number} ax - the position in x led for the mouse on canvas.
+     * @param  {number} ay - the position in y led for the mouse on canvas.
      *
-     * @return {Void}
+     * @return {void}
      */
     hooverOverLeftArrow: function(ax, ay) {
         var yPos = this.yPosStart + this.yPosLeftArrow;
@@ -344,10 +344,10 @@ HighScore.prototype = {
      * Checks if the mouse is hoovering over the right arrow below the high score
      * list.
      *
-     * @param  {Integer} ax - the position in x led for the mouse on canvas.
-     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     * @param  {number} ax - the position in x led for the mouse on canvas.
+     * @param  {number} ay - the position in y led for the mouse on canvas.
      *
-     * @return {Void}
+     * @return {void}
      */
     hooverOverRightArrow: function(ax, ay) {
         var yPos = this.yPosStart + this.yPosRightArrow;
@@ -361,7 +361,7 @@ HighScore.prototype = {
     /**
      * Removes all event listeners created when the file was started (initiated).
      *
-     * @return {Void}
+     * @return {void}
      */
     removeListeners: function() {
         this.canvas.removeEventListener("mousemove", this.onMouseMove, false);

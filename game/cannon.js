@@ -20,15 +20,17 @@
  *
  * Sets the cannon specifications.
  *
- * @param {[type]} position     - the position for the cannon in x and y led.
- * @param {[type]} aliens       - the aliens object containing all aliens.
- * @param {[type]} cities       - the cities object containing all cities.
- * @param {[type]} mysteryShips - the object containing the mystery ship object.
+ * @param {Object} position     - the position for the cannon in x and y led.
+ * @param {Object} aliens       - the aliens object containing all aliens.
+ * @param {Object} cities       - the cities object containing all cities.
+ * @param {Object} mysteryShips - the object containing the mystery ship object.
+ * @param {number} gameBoardWidth  - the width of the game board.
  */
-function Cannon(position, aliens, cities, mysteryShips) {
+function Cannon(position, aliens, cities, mysteryShips, gameBoardWidth) {
+    this.position               = position;
     this.aliens                 = aliens;
     this.missiles               = new Missiles(aliens, cities, mysteryShips);
-    this.position               = position;
+    this.gameBoardWidth         = gameBoardWidth;
     this.velocity               = new Vector(4, 4);
     this.cannonWidth            = 45;
     this.cannonHeight           = 28;
@@ -96,11 +98,13 @@ Cannon.prototype = {
      * Moves the cannon to the left with one pixel muliplied with the velocity.
      * The velocity is used to determine the speed of the cannons movement.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    moveLeft: function() {
+    moveLeft: function(td) {
         if (!this.shouldBeRemoved) {
-            this.position.x -= 1 * this.velocity.x;
+            this.position.x -= this.velocity.x * td;
         }
     },
 
@@ -108,11 +112,13 @@ Cannon.prototype = {
      * Moves the cannon to the right with one pixel muliplied with the velocity.
      * The velocity is used to determine the speed of the cannons movement.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    moveRight: function() {
+    moveRight: function(td) {
         if (!this.shouldBeRemoved) {
-            this.position.x += 1 * this.velocity.x;
+            this.position.x += this.velocity.x * td;
         }
     },
 
@@ -141,29 +147,27 @@ Cannon.prototype = {
      * function. Call the missile function to update the missile movement and to
      * check if aliens has hit the cannon. Checks so the cannon stays in the areay.
      *
-     * @param  {number}  width - the width of the cannon.
+     * @param  {number}  td  - Time difference offset
      *
      * @return {void}
      */
-    update: function(td, width) {
-        if (Key.isDown(Key.LEFT))   this.moveLeft();
-        if (Key.isDown(Key.RIGHT))  this.moveRight();
+    update: function(td) {
+        if (Key.isDown(Key.LEFT))   this.moveLeft(td);
+        if (Key.isDown(Key.RIGHT))  this.moveRight(td);
         if (Key.isDown(Key.SPACE))  this.fire();
-        this.missiles.update();
+        this.missiles.update(td);
         this.aliensHitCannon();
-        this.stayInArea(width);
+        this.stayInArea();
     },
 
     /**
      * Checks that the cannon stays on the game board.
      *
-     * @param  {number}  width - the width of the cannon.
-     *
      * @return {void}
      */
-    stayInArea: function(width) {
-        if (this.position.x > (width - this.cannonWidth)) {
-            this.position.x = (width - this.cannonWidth);
+    stayInArea: function() {
+        if (this.position.x > (this.gameBoardWidth - this.cannonWidth)) {
+            this.position.x = (this.gameBoardWidth - this.cannonWidth);
         }
 
         if (this.position.x < 0) {
@@ -176,10 +180,10 @@ Cannon.prototype = {
      * cannon is hit by the an alien beam.
      *
      * @param  {Object}  beamRayPos     - the vector position of an alien beam or ray.
-     * @param  {Integer}  beamRayWidth  - the width of the beam or ray.
-     * @param  {Integer}  beamRayHeight - the height of the beam or ray.
+     * @param  {number}  beamRayWidth  - the width of the beam or ray.
+     * @param  {number}  beamRayHeight - the height of the beam or ray.
      *
-     * @return {Boolean}  True if the cannon is hit by an alien beam, false otherwise.
+     * @return {boolean}  True if the cannon is hit by an alien beam, false otherwise.
      */
     cannonHit: function(beamRayPos, beamRayWidth, beamRayHeight) {
         if (isIntersect(this.position.x, this.position.y, this.cannonWidth, this.cannonHeight, beamRayPos.x, beamRayPos.y, beamRayWidth, beamRayHeight)) {

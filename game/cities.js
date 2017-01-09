@@ -12,8 +12,11 @@
  * The cities constructor
  *
  * Sets the cities specifications.
+ *
+ * @param {number} gameBoardWidth  - the width of the game board.
  */
-function Cities() {
+function Cities(gameBoardWidth) {
+    this.gameBoardWidth = gameBoardWidth;
     this.cityCanvas = null;
     this.cityCt = null;
     this.posY = 55;
@@ -33,11 +36,11 @@ Cities.prototype = {
      * The cities is not redrawn because the cities are damaged by the missiles,
      * beams and rays.
      *
-     * @return {Void}
+     * @return {void}
      */
     start: function() {
         this.cityCanvas = document.createElement("canvas");
-        this.cityCanvas.width = 900;
+        this.cityCanvas.width = this.gameBoardWidth;
         this.cityCanvas.height = 55;
         this.cityCt = this.cityCanvas.getContext("2d");
 
@@ -57,7 +60,7 @@ Cities.prototype = {
      *
      * @param  {Object} missile - the missile object.
      *
-     * @return {Void}
+     * @return {void}
      */
     missileHitsCities: function(missile) {
         for (var i = 0; i < this.cities.length; i++) {
@@ -74,7 +77,7 @@ Cities.prototype = {
      *
      * @param  {Object} beam - the beam object.
      *
-     * @return {Void}
+     * @return {void}
      */
     beamHitsCities: function(beam) {
         for (var i = 0; i < this.cities.length; i++) {
@@ -91,7 +94,7 @@ Cities.prototype = {
      *
      * @param  {Object} ray - the ray object.
      *
-     * @return {Void}
+     * @return {void}
      */
     rayHitsCities: function(ray) {
         for (var i = 0; i < this.cities.length; i++) {

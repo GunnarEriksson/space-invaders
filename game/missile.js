@@ -26,6 +26,7 @@ function Missile(position, aliens, cities, mysteryShips) {
     this.height             = 5;
     this.shouldBeRemoved    = false;
     this.hitsBeam           = false;
+    this.hitsCity           = false;
 
 }
 
@@ -56,26 +57,31 @@ Missile.prototype = {
      * Moves the missile up with one pixel muliplied with the velocity.
      * The velocity is used to determine the speed of the missiles movement.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    moveUp: function() {
-        this.position.y -= 1 * this.velocity.y;
+    moveUp: function(td) {
+        this.position.y -= td * this.velocity.y;
     },
 
     /**
      * Updates the missile movement and check if the missile has reached the
      * top of the game board or has hit an alien.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    update: function() {
-        this.moveUp();
+    update: function(td) {
+        this.moveUp(td);
         this.stayInArea();
         if (this.aliens.aliensHit(this.position)) {
             this.shouldBeRemoved = true;
         }
 
         if (this.cities.missileHitsCities(this)) {
+            this.hitsCity = true;
             this.shouldBeRemoved = true;
         }
 

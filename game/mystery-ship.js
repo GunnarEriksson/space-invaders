@@ -20,7 +20,7 @@
  * top of the game board.
  *
  * @param {Object} position     - the position of the mystery ship in x and y led.
- * @param {String} direction    - the direction of the mystery ship (left or right).
+ * @param {string} direction    - the direction of the mystery ship (left or right).
  */
 function MysteryShip(position, direction) {
     this.position           = position  || new Vector();
@@ -59,32 +59,38 @@ MysteryShip.prototype = {
     /**
      * Moves the mystery ship to the left with one pixel muliplied with the velocity.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    moveLeft: function() {
-        this.position.x -= 1 * this.velocity.x;
+    moveLeft: function(td) {
+        this.position.x -= td * this.velocity.x;
     },
 
     /**
      * Moves the mystery ship to the right with one pixel muliplied with the velocity.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    moveRight: function() {
-        this.position.x += 1 * this.velocity.x;
+    moveRight: function(td) {
+        this.position.x += td * this.velocity.x;
     },
 
     /**
      * Updates the movement of the mystery ship and checks if the mystery ship
      * stays in the area.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    update: function() {
+    update: function(td) {
         if (this.direction === "right") {
-            this.moveRight();
+            this.moveRight(td);
         } else {
-            this.moveLeft();
+            this.moveLeft(td);
         }
 
         this.stayInArea();
@@ -114,7 +120,7 @@ MysteryShip.prototype = {
      *
      * @param  {Object}  missilePos - The vector of the missile.
      *
-     * @return {Boolean}  True if the mystery ship has been hit, false otherwise.
+     * @return {boolean}  True if the mystery ship has been hit, false otherwise.
      */
     mysteryShipHit: function(missile) {
         if (isIntersect(this.position.x, this.position.y, this.width, this.height, missile.position.x, missile.position.y, missile.width, missile.height)) {
@@ -132,7 +138,7 @@ MysteryShip.prototype = {
  * when the mystery ship is hit by a missile fired by the cannon.
  *
  * @param {Object} position     - the position of the exploded mystery ship in x and y led.
- * @param {Integer} direction   - the score for hitting the mystery ship.
+ * @param {number} direction   - the score for hitting the mystery ship.
  */
 function ExplodedMysteryShip(position, points) {
     this.position           = position  || new Vector();

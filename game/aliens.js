@@ -19,13 +19,14 @@
  *
  * @param {Object} cities           - the object containing the cities.
  * @param {Object} score            - the object containing the score.
- * @param {Integer} gameBoardWidth  - the width of the game board.
+ * @param {number} gameBoardHeight - the height of the game board.
+ * @param {number} gameBoardWidth  - the width of the game board.
  */
 function Aliens(cities, score, gameBoardHeight, gameBoardWidth) {
     this.cities = cities;
     this.score = score;
-    this.gameBoardWidth = gameBoardWidth;
     this.gameBoardHeight = gameBoardHeight;
+    this.gameBoardWidth = gameBoardWidth;
     this.groundOffset = 105;
     this.aliens = null;
     this.explodedAliens = null;
@@ -54,7 +55,7 @@ Aliens.prototype = {
      * Creates all aliens for the game and starts the beam and ray functions, which
      * are used by the aliens.
      *
-     * @return {Void}
+     * @return {void}
      */
     start: function() {
         var posX = 200;
@@ -195,7 +196,7 @@ Aliens.prototype = {
      *
      * @param  {Object}  missilePos - The vector of the missile location.
      *
-     * @return {Boolean}  True if an alien has been hit by a missile, false otherwise.
+     * @return {boolean}  True if an alien has been hit by a missile, false otherwise.
      */
     aliensHit: function(missilePos) {
         for (var i = 0; i < this.aliens.length; i++) {
@@ -213,7 +214,7 @@ Aliens.prototype = {
      *
      * @param  {Object}  cannonPos - The vector of the cannon location.
      *
-     * @return {Boolean}  True if an alien has hit the cannon, false otherwise.
+     * @return {boolean}  True if an alien has hit the cannon, false otherwise.
      */
     aliensHitCannon: function(cannonPos) {
         for (var i = 0; i < this.aliens.length; i++) {
@@ -231,9 +232,11 @@ Aliens.prototype = {
      * Sets the dirction of all aliens and updates the beams and rays fired by
      * the aliens.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    update: function() {
+    update: function(td) {
         this.counter++;
         if (this.aliens.length < 40 && this.aliens.length > 30) {
             this.speed = 30;
@@ -244,12 +247,12 @@ Aliens.prototype = {
         } else if (this.aliens.length < 10 && this.aliens.length > 5) {
             this.speed = 5;
         } else if (this.aliens.length < 2) {
-            this.speed = 2 ;
+            this.speed = 2;
         }
 
         for (var i = this.aliens.length -1; i >= 0; i--) {
             if (this.counter % this.speed === 0) {
-                this.aliens[i].update();
+                this.aliens[i].update(td);
                 this.moveSoundVersion = (this.moveSoundVersion + 1) % 2;
                 if (this.moveSoundVersion > 0) {
                     this.alienMoveSoundHigh.play();
@@ -305,11 +308,11 @@ Aliens.prototype = {
 
 
         if (this.beams) {
-            this.beams.update();
+            this.beams.update(td);
         }
 
         if (this.rays) {
-            this.rays.update();
+            this.rays.update(td);
         }
 
         for (var k = this.explodedAliens.length -1; k >= 0; k--) {

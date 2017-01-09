@@ -15,7 +15,7 @@
  *
  * Sets the mystery ships specifications.
  *
- * @param {Integer} score   - the score for hitting the mystery ship.
+ * @param {number} score   - the score for hitting the mystery ship.
  */
 function MysteryShips(score) {
     this.score                  = score;
@@ -67,7 +67,7 @@ MysteryShips.prototype = {
      *
      * @param  {Object}  missile - the missile object.
      *
-     * @return {Boolean}  True if an alien has been hit by a missile, false otherwise.
+     * @return {boolean}  True if an alien has been hit by a missile, false otherwise.
      */
     mysteryShipsHit: function(missile) {
         for (var i = 0; i < this.mysteryShips.length; i++) {
@@ -88,9 +88,11 @@ MysteryShips.prototype = {
      * ship is created. A timer controls how long the exploded mystery ship should
      * be present.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    update: function() {
+    update: function(td) {
         if (this.mysteryShips.length === 0) {
             this.timer--;
         }
@@ -112,7 +114,7 @@ MysteryShips.prototype = {
                 this.shipMoveSound.play();
             }
 
-            this.mysteryShips[i].update();
+            this.mysteryShips[i].update(td);
 
             if (this.mysteryShips[i].shouldBeRemoved) {
                 if (!this.mysteryShips[i].reachedBorder) {

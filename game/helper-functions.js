@@ -17,7 +17,7 @@
  * @param  {number}  bw - The width of the second object.
  * @param  {number}  bh - The height of the second object.
  *
- * @return {Boolean}  True if the objects intersects, false otherwise.
+ * @return {boolean}  True if the objects intersects, false otherwise.
  */
 function isIntersect(ax, ay, aw, ah, bx, by, bw, bh) {
     return ax < bx + bw && bx < ax + aw && ay < by + bh && by < ay + ah;
@@ -27,14 +27,14 @@ function isIntersect(ax, ay, aw, ah, bx, by, bw, bh) {
  * Helper function to show a text letter by letter with a delay.
  *
  * @param  {Object}  ct             - the canvas context.
- * @param  {Integer} timer          - the timer controlling the time to show the text.
- * @param  {Integer} index          - the position in the text array.
- * @param  {[String]} text          - the text stored in an array.
- * @param  {Integer} offsetX        - the position in x led for the character.
- * @param  {Integer} offsetY        - the position in y led for the character.
- * @param  {Integer} textDistance   - the distance between the characters.
+ * @param  {number} timer          - the timer controlling the time to show the text.
+ * @param  {number} index          - the position in the text array.
+ * @param  {string} text          - the text stored in an array.
+ * @param  {number} offsetX        - the position in x led for the character.
+ * @param  {number} offsetY        - the position in y led for the character.
+ * @param  {number} textDistance   - the distance between the characters.
  *
- * @return {Void}
+ * @return {void}
  */
 function showTextLetterByLetter(ct, timer, index, text, offsetX, offsetY, textDistance) {
     if (timer % 8 === 0 & index < text.length) {

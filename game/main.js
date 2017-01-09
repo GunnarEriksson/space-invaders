@@ -66,7 +66,7 @@ window.Key = {
      * The array is checked continuously.
      *
      * @param  {number}  keyCode - The key code of the pressed key.
-     * @return {Boolean}  True if the key code of the pressed key is stored in array.
+     * @return {boolean}  True if the key code of the pressed key is stored in array.
      */
     isDown: function(keyCode) {
         return this.pressed[keyCode];
@@ -104,7 +104,7 @@ window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, fa
  * Controls the status of the game (intro, game, gameOver or highScore). Is the
  * state machine of the game.
  *
- * @param {String} status - the status of the game.
+ * @param {string} status - the status of the game.
  */
 function Status(status) {
     this.gameStatus = status;
@@ -119,7 +119,7 @@ Status.prototype = {
     /**
      * Sets the game status of the game. Used when switching state of the game.
      *
-     * @param {String} gameStatus - the next status of the game (intro, game,
+     * @param {string} gameStatus - the next status of the game (intro, game,
      *                              gameOver or highScore).
      *
      * @return {void}
@@ -132,9 +132,9 @@ Status.prototype = {
     /**
      * Checks the game status of the game.
      *
-     * @param  {String}  gameStatus - the game status.
+     * @param  {string}  gameStatus - the game status.
      *
-     * @return {Boolean}            - true if the game status is according to the
+     * @return {boolean}            - true if the game status is according to the
      *                                in parameter, false otherwise.
      */
     isGameStatus: function(gameStatus) {
@@ -204,7 +204,7 @@ Score.prototype = {
     /**
      * Adds increases the score.
      *
-     * @param {Integer} score - the score to increase the score with.
+     * @param {number} score - the score to increase the score with.
      *
      * @return {void}
      */
@@ -216,7 +216,7 @@ Score.prototype = {
      * Gets the highest score from the high score list in the database. Using
      * Ajax and Json to send the request to the server side.
      *
-     * @return {Void}
+     * @return {void}
      */
     getHighScore: function() {
         var that = this;
@@ -261,11 +261,11 @@ window.SpaceInvaders = (function() {
         gameOver = new GameOver(canvas, status);
         highScore = new HighScore(canvas, status);
         score = new Score();
-        cities = new Cities(ct);
+        cities = new Cities(width);
         ground = new Grounds(height);
         mysteryShips = new MysteryShips(score);
         aliens = new Aliens(cities, score, height, width);
-        cannons = new Cannons(aliens, cities, mysteryShips);
+        cannons = new Cannons(aliens, cities, mysteryShips, height, width);
         isNewGame = true;
         isInitHighScore = true;
         isInitGameOver = true;
@@ -278,7 +278,7 @@ window.SpaceInvaders = (function() {
     /**
      * Starts the game.
      *
-     * @return {Void}
+     * @return {void}
      */
     var startGame = function() {
         isCannonPresent = true;
@@ -287,13 +287,13 @@ window.SpaceInvaders = (function() {
         aliens.start();
         cities.start();
         mysteryShips.start();
-        cannons.start(height);
+        cannons.start();
     };
 
     /**
      * Updates the game according to the game status.
      *
-     * @param  {Object}  ct - The canvas context.
+     * @param  {number}  td  - Time difference offset
      *
      * @return {void}
      */
@@ -316,10 +316,10 @@ window.SpaceInvaders = (function() {
             }
 
             if (isCannonPresent) {
-                cannons.update(td, width);
+                cannons.update(td);
                 if (cannons.timer === 180) {
-                    aliens.update();
-                    mysteryShips.update();
+                    aliens.update(td);
+                    mysteryShips.update(td);
                 }
             } else {
                 status.setGameStatus("gameOver");
@@ -386,7 +386,8 @@ window.SpaceInvaders = (function() {
      */
     var gameLoop = function() {
         var now = Date.now();
-        var td = (now - (lastGameTick || now)) / 1000;
+        //var td = (now - (lastGameTick || now)) / 1000;
+        var td = (now - (lastGameTick || now)) / 17;
         lastGameTick = now;
         requestAnimFrame(gameLoop);
         update(td);

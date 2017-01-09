@@ -83,11 +83,13 @@ Beams.prototype = {
      * Updates all beams and removes a beam from the array if the beam
      * should be removed when hitting the cannon or the city.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    update: function() {
+    update: function(td) {
         for (var i = this.beams.length -1; i >= 0; i--) {
-            this.beams[i].update();
+            this.beams[i].update(td);
             if (this.beams[i].shouldBeRemoved) {
                 if (!this.beams[i].cannonHit) {
                     this.groundExplosions.push(new GroundExplosion(new Vector(this.beams[i].position.x, this.beams[i].position.y + 3)));

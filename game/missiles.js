@@ -70,14 +70,16 @@ Missiles.prototype = {
      * Updates all missiles and removes a missile from the array if the missile
      * should be removed.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    update: function() {
+    update: function(td) {
         var i = 0;
         while (i < this.missiles.length) {
-            this.missiles[i].update();
+            this.missiles[i].update(td);
             if (this.missiles[i].shouldBeRemoved) {
-                if (this.missiles[i].position.y < 130 || this.missiles[i].hitsBeam) {
+                if (this.missiles[i].position.y < 130 || this.missiles[i].hitsBeam || this.missiles[i].hitsCity) {
                     this.airExplosions.push(new AirExplosion(new Vector(this.missiles[i].position.x, this.missiles[i].position.y)));
                     if (this.airExplosion.currentTime > 0) {
                         this.airExplosion.pause();
@@ -106,7 +108,7 @@ Missiles.prototype = {
     /**
      * Checks if a missile hits a beam fired by an alien.
      *
-     * @return {Void}
+     * @return {void}
      */
     missileHitsBeam: function() {
         var beams = this.aliens.beams.beams;

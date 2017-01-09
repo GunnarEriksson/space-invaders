@@ -15,11 +15,15 @@
  * @param {Object} aliens       - the aliens object containing all aliens.
  * @param {Object} cities       - the cities object containing all cities.
  * @param {Object} mysteryShips - the object containing the mystery ship object.
+ * @param {number} gameBoardHeight - the height of the game board.
+ * @param {number} gameBoardWidth  - the width of the game board.
  */
-function Cannons(aliens, cities, mysteryShips) {
+function Cannons(aliens, cities, mysteryShips, gameBoardHeight, gameBoardWidth) {
     this.aliens = aliens;
     this.cities = cities;
     this.mysteryShips = mysteryShips;
+    this.gameBoardHeight = gameBoardHeight;
+    this.gameBoardWidth = gameBoardWidth;
     this.cannons = [];
     this.cannonHit = false;
     this.timer = 180;
@@ -36,14 +40,12 @@ Cannons.prototype = {
      * Creats three cannon objects. One is place behind the first city and the
      * other two are placed below ground as spares.
      *
-     * @param  {Integer} height - the height of the game board.
-     *
      * @return {void}
      */
-    start: function(height) {
-        this.cannons.push(new Cannon(new Vector(150, height-105), this.aliens, this.cities, this.mysteryShips));
-        this.cannons.push(new Cannon(new Vector(10, height-35), this.aliens, this.cities, this.mysteryShips));
-        this.cannons.push(new Cannon(new Vector(70, height-35), this.aliens, this.cities, this.mysteryShips));
+    start: function() {
+        this.cannons.push(new Cannon(new Vector(150, this.gameBoardHeight - 105), this.aliens, this.cities, this.mysteryShips, this.gameBoardWidth));
+        this.cannons.push(new Cannon(new Vector(10, this.gameBoardHeight - 35), this.aliens, this.cities, this.mysteryShips, this.gameBoardWidth));
+        this.cannons.push(new Cannon(new Vector(70, this.gameBoardHeight - 35), this.aliens, this.cities, this.mysteryShips, this.gameBoardWidth));
     },
 
     /**
@@ -51,7 +53,7 @@ Cannons.prototype = {
      *
      * @param  {Object}  ct - The canvas context.
      *
-     * @return {Void}
+     * @return {void}
      */
     draw: function(ct) {
         for (var i = 0; i < this.cannons.length; i++) {
@@ -68,15 +70,14 @@ Cannons.prototype = {
      * If the aliens reached the earth and capture (collides with) a cannon, all
      * cannons are removed and the game is over.
      *
-     * @param  {[type]} td      - not used.
-     * @param  {Integer} width  - the width of the game board.
+     * @param  {number}  td  - Time difference offset
      *
-     * @return {Void}
+     * @return {void}
      */
-    update: function(td, width) {
+    update: function(td) {
 
         if (this.cannons.length > 0) {
-            this.cannons[0].update(td, width);
+            this.cannons[0].update(td);
 
             if (this.cannons[0].alienCapturesCannon) {
                 this.cannons.length = 0;
@@ -86,12 +87,12 @@ Cannons.prototype = {
                     this.cannons.shift();
                     if (this.cannons.length > 1) {
                         this.cannons[0].position.x = 150;
-                        this.cannons[0].position.y = 650-105;
+                        this.cannons[0].position.y = this.gameBoardHeight - 105;
                         this.cannons[1].position.x = 10;
-                        this.cannons[1].position.y = 650-35;
+                        this.cannons[1].position.y = this.gameBoardHeight - 35;
                     } else if (this.cannons.length > 0) {
                         this.cannons[0].position.x = 150;
-                        this.cannons[0].position.y = 650-105;
+                        this.cannons[0].position.y = this.gameBoardHeight - 105;
                     }
                     this.timer = 180;
                 }
@@ -103,10 +104,10 @@ Cannons.prototype = {
      * Checks if the cannon has been hit by an alien beam or ray.
      *
      * @param  {Object} beamRayPos      - the vector position of the beam or ray.
-     * @param  {Integer} beamRayWidth    - the width of the beam or ray.
-     * @param  {Integer} beamRayHeight   - the height of the beam or ray.
+     * @param  {number} beamRayWidth    - the width of the beam or ray.
+     * @param  {number} beamRayHeight   - the height of the beam or ray.
      *
-     * @return {Void}
+     * @return {void}
      */
     cannonsHit: function(beamRayPos, beamRayWidth, beamRayHeight) {
         if (this.cannons.length > 0) {

@@ -68,7 +68,7 @@ Intro.prototype = {
      *
      * @param  {Object}  ct - The canvas context.
      *
-     * @return {Void}
+     * @return {void}
      */
     draw: function(ct) {
         ct.save();
@@ -128,7 +128,7 @@ Intro.prototype = {
      * Updates the timer, which is used to write the text letter by letter with
      * delay.
      *
-     * @return {Void}
+     * @return {void}
      */
     update: function() {
         if (this.timer <= 530) {
@@ -141,7 +141,7 @@ Intro.prototype = {
      *
      * @param  {Object} event  - the click event.
      *
-     * @return {Void}
+     * @return {void}
      */
     checkPlayGame: function(event) {
         var pos = this.getMousePos(event);
@@ -157,7 +157,7 @@ Intro.prototype = {
      *
      * @param  {Object} event  - the click event.
      *
-     * @return {Void}
+     * @return {void}
      */
     checkHighScores: function(event) {
         var pos = this.getMousePos(event);
@@ -174,7 +174,7 @@ Intro.prototype = {
      *
      * @param  {Object} event - the mouse move event
      *
-     * @return {Void}
+     * @return {void}
      */
     mouseMove: function(event) {
         var pos = this.getMousePos(event);
@@ -188,7 +188,7 @@ Intro.prototype = {
      *
      * @param  {Object} event - the mouse move event.
      *
-     * @return {Void}
+     * @return {void}
      */
     getMousePos: function(event) {
         var rect = this.canvas.getBoundingClientRect();
@@ -202,10 +202,10 @@ Intro.prototype = {
     /**
      * Checks if the mouse is hoovering over the text "PLAY GAME".
      *
-     * @param  {Integer} ax - the position in x led for the mouse on canvas.
-     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     * @param  {number} ax - the position in x led for the mouse on canvas.
+     * @param  {number} ay - the position in y led for the mouse on canvas.
      *
-     * @return {Void}
+     * @return {void}
      */
     hooverOverPlayGame: function(ax, ay) {
         if (isIntersect(ax, ay, 1, 1, 388, 524, 125, 20)) {
@@ -218,10 +218,10 @@ Intro.prototype = {
     /**
      * Checks if the mouse is hoovering over the text "HIGH SCORE".
      *
-     * @param  {Integer} ax - the position in x led for the mouse on canvas.
-     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     * @param  {number} ax - the position in x led for the mouse on canvas.
+     * @param  {number} ay - the position in y led for the mouse on canvas.
      *
-     * @return {Void}
+     * @return {void}
      */
     hooverOverHighScore: function(ax, ay) {
         if (isIntersect(ax, ay, 1, 1, 374, 563, 160, 20)) {
@@ -234,7 +234,7 @@ Intro.prototype = {
     /**
      * Removes all event listeners created when the file was started (initiated).
      *
-     * @return {Void}
+     * @return {void}
      */
     removeListeners: function() {
         this.canvas.removeEventListener("mousemove", this.onMouseMove, false);

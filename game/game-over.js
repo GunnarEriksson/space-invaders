@@ -57,8 +57,8 @@ GameOver.prototype = {
     /**
      * Initates the score and all event listeners.
      *
-     * @param  {Integer} score - the score of the game.
-     * @return {Void}
+     * @param  {number} score - the score of the game.
+     * @return {void}
      */
     init: function(score) {
         this.delay = 60;
@@ -81,7 +81,7 @@ GameOver.prototype = {
      * with a delay. Shows the name if a player writes the name from a keyboard.
      *
      * @param  {Object}  ct - The canvas context.
-     * @return {Void}
+     * @return {void}
      */
     draw: function(ct) {
         ct.save();
@@ -138,7 +138,7 @@ GameOver.prototype = {
      * Updates the timer, which is used to write the text letter by letter with
      * delay.
      *
-     * @return {Void}
+     * @return {void}
      */
     update: function() {
         if (this.timer <= 530) {
@@ -168,7 +168,7 @@ GameOver.prototype = {
      *
      * @param  {Object} event  - the click event.
      *
-     * @return {Void}
+     * @return {void}
      */
     checkSavePlayer: function(event) {
         if (this.playGame === false) {
@@ -190,7 +190,7 @@ GameOver.prototype = {
      *
      * @param  {Object} event  - the click event.
      *
-     * @return {Void}
+     * @return {void}
      */
     checkContinue: function(event) {
         var pos = this.getMousePos(event);
@@ -207,7 +207,7 @@ GameOver.prototype = {
      *
      * @param  {Object} event - the mouse move event
      *
-     * @return {Void}
+     * @return {void}
      */
     mouseMove: function(event) {
         var pos = this.getMousePos(event);
@@ -220,7 +220,7 @@ GameOver.prototype = {
      *
      * @param  {Object} event - the mouse move event.
      *
-     * @return {Void}
+     * @return {void}
      */
     getMousePos: function(event) {
         var rect = this.canvas.getBoundingClientRect();
@@ -234,10 +234,10 @@ GameOver.prototype = {
     /**
      * Checks if the mouse is hoovering over the text "SAVE".
      *
-     * @param  {Integer} ax - the position in x led for the mouse on canvas.
-     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     * @param  {number} ax - the position in x led for the mouse on canvas.
+     * @param  {number} ay - the position in y led for the mouse on canvas.
      *
-     * @return {Void}
+     * @return {void}
      */
     hoverOverSave: function(ax, ay) {
         if (isIntersect(ax, ay, 1, 1, 421, 333, 57, 20)) {
@@ -250,10 +250,10 @@ GameOver.prototype = {
     /**
      * Checks if the mouse is hoovering over the text "CONTINUE".
      *
-     * @param  {Integer} ax - the position in x led for the mouse on canvas.
-     * @param  {Integer} ay - the position in y led for the mouse on canvas.
+     * @param  {number} ax - the position in x led for the mouse on canvas.
+     * @param  {number} ay - the position in y led for the mouse on canvas.
      *
-     * @return {Void}
+     * @return {void}
      */
     hoverOverContinue: function(ax, ay) {
         if (isIntersect(ax, ay, 1, 1, 391, 375, 116, 20)) {
@@ -273,10 +273,9 @@ GameOver.prototype = {
      *
      * @param {Object} event - the key pressed event.
      *
-     * @return {Void}
+     * @return {void}
      */
     addCharacter: function(event) {
-        console.log("Button down listener called.");
         if (event.key !== undefined) {
             if ((event.key === "Delete") || (event.key === "Backspace") || (event.key === " ")) {
                 event.preventDefault();
@@ -314,7 +313,7 @@ GameOver.prototype = {
                     this.name.pop();
                 }
             } else {
-                if (key.length === 1) {
+                if (key.length === 1 && this.name.length < 20) {
                     this.name.push(key);
                 }
             }
@@ -342,7 +341,7 @@ GameOver.prototype = {
                 if (this.name.length > 0) {
                     this.name.pop();
                 }
-            } else {
+            } else if (this.name.length < 20) {
                 if ((keyCode > 64 && keyCode < 91) || (keyCode === 192) || (keyCode === 221) || (keyCode === 222)) {
                     if (keyCode === 192) {
                         keyCode = 214;
@@ -372,10 +371,10 @@ GameOver.prototype = {
      * Sends the name and score, using Ajax and Json, to the server side to be
      * stored in the high score list in the data base.
      *
-     * @param  {String} name  - the name of the player.
-     * @param  {Integer} score - the score of the player.
+     * @param  {string} name  - the name of the player.
+     * @param  {number} score - the score of the player.
      *
-     * @return {Void}
+     * @return {void}
      */
     saveResultInList: function(name, score) {
 
@@ -398,7 +397,7 @@ GameOver.prototype = {
     /**
      * Removes all event listeners created when the file was started (initiated).
      *
-     * @return {Void}
+     * @return {void}
      */
     removeListeners: function() {
         window.removeEventListener('keydown', this.onKeyDown, false);

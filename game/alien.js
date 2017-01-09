@@ -18,9 +18,9 @@
  * Sets the alien specifications.
  *
  * @param {Object} position         - the position of the alien in x and y led.
- * @param {String} direction        - the direction (left or right) of the alien.
+ * @param {string} direction        - the direction (left or right) of the alien.
  * @param {Object} alien            - the characteristics of the alien.
- * @param {Integer} gameBoardWidth  - the widht of the game board.
+ * @param {number} gameBoardWidth  - the widht of the game board.
  */
 function Alien(position, direction, alien, gameBoardWidth) {
     this.position           = position  || new Vector();
@@ -72,33 +72,39 @@ Alien.prototype = {
     /**
      * Moves the alien to the left with one pixel muliplied with the velocity.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    moveLeft: function() {
-        this.position.x -= this.jumpDistance * this.velocity.x;
+    moveLeft: function(td) {
+        this.position.x -= this.jumpDistance * this.velocity.x * td;
     },
 
     /**
      * Moves the alien to the right with one pixel muliplied with the velocity.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    moveRight: function() {
-        this.position.x += this.jumpDistance * this.velocity.x;
+    moveRight: function(td) {
+        this.position.x += this.jumpDistance * this.velocity.x * td;
     },
 
     /**
      * Updates the movement of the alien and checks if the alien stays in the area.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    update: function() {
+    update: function(td) {
         this.version = (this.version + 1) % 2;
 
         if (this.direction === "right") {
-            this.moveRight();
+            this.moveRight(td);
         } else {
-            this.moveLeft();
+            this.moveLeft(td);
         }
 
         this.stayInArea();
@@ -125,7 +131,7 @@ Alien.prototype = {
      *
      * @param  {Object}  missilePos - The vector of the missile.
      *
-     * @return {Boolean}  True if the alien has been hit, false otherwise.
+     * @return {boolean}  True if the alien has been hit, false otherwise.
      */
     alienHit: function(missilePos) {
         if (isIntersect(this.position.x, this.position.y, this.alienWidth, this.alienHeight, missilePos.x, missilePos.y, 3, 5)) {
@@ -141,7 +147,7 @@ Alien.prototype = {
      *
      * @param  {Object}  cannonPos - The vector of the cannon.
      *
-     * @return {Boolean}   True if the alien has hit the cannon, false otherwise.
+     * @return {boolean}   True if the alien has hit the cannon, false otherwise.
      */
     alienHitCannon: function(cannonPos) {
         if (isIntersect(this.position.x, this.position.y, this.alienWidth, this.alienHeight, cannonPos.x, cannonPos.y, 45, 25)) {

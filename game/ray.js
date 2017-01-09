@@ -59,20 +59,24 @@ Ray.prototype = {
      * Moves the ray down with one pixel muliplied with the velocity.
      * The velocity is used to determine the speed of the ray movement.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    moveDown: function() {
-        this.position.y += 1 * this.velocity.y;
+    moveDown: function(td) {
+        this.position.y += td * this.velocity.y;
     },
 
     /**
      * Updates the ray movement and check if the beam has reached the
      * bottom of the game board or has hit the gun or city.
      *
+     * @param  {number}  td  - Time difference offset
+     *
      * @return {void}
      */
-    update: function() {
-        this.moveDown();
+    update: function(td) {
+        this.moveDown(td);
         this.stayInArea();
         if (this.cannons.cannonsHit(this.position, this.width, this.height)) {
             this.shouldBeRemoved = true;
