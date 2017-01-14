@@ -76,6 +76,7 @@ Beams.prototype = {
             this.alienMissile.pause();
             this.alienMissile.currentTime = 0;
         }
+
         this.alienMissile.play();
     },
 
