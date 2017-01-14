@@ -43,6 +43,7 @@ Cannons.prototype = {
      * @return {void}
      */
     start: function() {
+        this.timer = 180;
         this.cannons.push(new Cannon(new Vector(150, this.gameBoardHeight - 105), this.aliens, this.cities, this.mysteryShips, this.gameBoardWidth));
         this.cannons.push(new Cannon(new Vector(10, this.gameBoardHeight - 35), this.aliens, this.cities, this.mysteryShips, this.gameBoardWidth));
         this.cannons.push(new Cannon(new Vector(70, this.gameBoardHeight - 35), this.aliens, this.cities, this.mysteryShips, this.gameBoardWidth));

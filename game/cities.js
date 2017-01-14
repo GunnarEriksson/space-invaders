@@ -17,8 +17,8 @@
  */
 function Cities(gameBoardWidth) {
     this.gameBoardWidth = gameBoardWidth;
-    this.cityCanvas = null;
-    this.cityCt = null;
+    this.cityCanvas = document.createElement("canvas");
+    this.cityCt = this.cityCanvas.getContext("2d");
     this.posY = 55;
     this.height = 55;
     this.cities = [];
@@ -39,10 +39,8 @@ Cities.prototype = {
      * @return {void}
      */
     start: function() {
-        this.cityCanvas = document.createElement("canvas");
         this.cityCanvas.width = this.gameBoardWidth;
         this.cityCanvas.height = 55;
-        this.cityCt = this.cityCanvas.getContext("2d");
 
         var posX = 130;
         for (var i = 0; i < 4; i++) {
