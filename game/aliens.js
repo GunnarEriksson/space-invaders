@@ -41,6 +41,7 @@ function Aliens(cities, score, gameBoardHeight, gameBoardWidth) {
     this.distYNextAlien = 37;
     this.alienExplosion = new Audio("sound/alien_explosion.wav");
     this.alienMoveSound = new Audio("sound/alien_move.wav");
+    this.alienMoveSound2 = new Audio("sound/alien_move.wav");
 }
 
 /**
@@ -254,7 +255,17 @@ Aliens.prototype = {
                 this.aliens[i].update(td);
                 this.moveSoundVersion = (this.moveSoundVersion + 1) % 2;
                 if (this.moveSoundVersion > 0) {
+                    if (this.alienMoveSound.currentTime > 0) {
+                        this.alienMoveSound.pause();
+                        this.alienMoveSound.currentTime = 0;
+                    }
                     this.alienMoveSound.play();
+                } else {
+                    if (this.alienMoveSound2.currentTime > 0) {
+                        this.alienMoveSound2.pause();
+                        this.alienMoveSound2.currentTime = 0;
+                    }
+                    this.alienMoveSound2.play();
                 }
 
                 this.counter = 0;
