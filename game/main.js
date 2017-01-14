@@ -76,10 +76,16 @@ window.Key = {
      * Sets the key code of the pressed key to true in the pressed key array.
      * Indicates that a key has been pressed.
      *
+     * Prevents default for the space key to prevent the game board to move in
+     * vertical direction when firing the cannon.
+     *
      * @param  {Object}  event - The event object.
      * @return {void}
      */
     onKeydown: function(event) {
+        if (event.keyCode === 32) {
+            event.preventDefault();
+        }
         this.pressed[event.keyCode] = true;
     },
 
@@ -87,10 +93,17 @@ window.Key = {
      * Deletes the key code of the released key. Indicates that the pressed key
      * has been released.
      *
+     * Prevents default for the space key to prevent the game board to move in
+     * vertical direction when firing the cannon.
+     *
      * @param  {Object}  event - The event object.
      * @return {void}
      */
     onKeyup: function(event) {
+        if (event.keyCode === 32) {
+            event.preventDefault();
+        }
+
         delete this.pressed[event.keyCode];
     },
 };
