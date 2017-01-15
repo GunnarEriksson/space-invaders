@@ -10,11 +10,11 @@ include(__DIR__ . "/incl/header.php");
     <p>Du styr kanonen med vänster respektive höger piltangent. För att avfyra en
     missil använder du mellanslag.</p>
     <p>Det gäller att skjuta ned så många utomjordingar som möjligt innan dina tre
-    kanoner är förbrukade eller innan utomjordingarna har nått jorden. Du får olika
-    poäng beroende på vilket typ av utomjording du träffar med kanonens missiler.
-    Ju fler utomjordingar du träffar, desto snabbare rör sig utomjordingarna. När
-    de har nått vänster respektive höger kanten, flyttas utomjordingarna ned ett
-    steg. Det gäller för dig att hindra att utomjordingarna når jorden och erövra kanonen.</p>
+    kanoner är förbrukade eller innan utomjordingarna har nått jorden och erövrat
+    kanonen. Du får olika poäng beroende på vilket typ av utomjording du träffar
+    med kanonens missiler. Ju fler utomjordingar du träffar, desto snabbare rör sig
+    utomjordingarna. När de har nått vänster respektive höger kanten, flyttas
+    utomjordingarna ned ett steg.</p>
     <p>Det finns också ett rött mystiskt rymdskepp som då och då rör sig högt uppe
     i rymden. Lyckas du skjuta ned rymdskeppet får du extra poäng.</p>
     <p>Spelet slutar antingen när alla tre kanoner är förstörda eller att utomjordingarna

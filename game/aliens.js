@@ -35,13 +35,19 @@ function Aliens(cities, score, gameBoardHeight, gameBoardWidth) {
     this.rays = null;
     this.counter = null;
     this.speed = null;
-    this.moveSoundVersion = null;
     this.numberOfAliensInRow = 11;
     this.distXNextAlien = 50;
     this.distYNextAlien = 37;
     this.alienExplosion = new Audio("sound/alien_explosion.wav");
-    this.alienMoveSound = new Audio("sound/alien_move.wav");
+    this.moveSoundVersion = null;
+    this.alienMoveSound0 = new Audio("sound/alien_move.wav");
+    this.alienMoveSound0.volume = 0.4;
+    this.alienMoveSound1 = new Audio("sound/alien_move.wav");
+    this.alienMoveSound1.volume = 0.4;
     this.alienMoveSound2 = new Audio("sound/alien_move.wav");
+    this.alienMoveSound2.volume = 0.4;
+    this.alienMoveSound3 = new Audio("sound/alien_move.wav");
+    this.alienMoveSound3.volume = 0.4;
 }
 
 /**
@@ -253,19 +259,16 @@ Aliens.prototype = {
         for (var i = this.aliens.length -1; i >= 0; i--) {
             if (this.counter % this.speed === 0) {
                 this.aliens[i].update(td);
-                this.moveSoundVersion = (this.moveSoundVersion + 1) % 2;
-                if (this.moveSoundVersion > 0) {
-                    if (this.alienMoveSound.currentTime > 0) {
-                        this.alienMoveSound.pause();
-                        this.alienMoveSound.currentTime = 0;
-                    }
-                    this.alienMoveSound.play();
-                } else {
-                    if (this.alienMoveSound2.currentTime > 0) {
-                        this.alienMoveSound2.pause();
-                        this.alienMoveSound2.currentTime = 0;
-                    }
+                this.clearAlienMoveSound();
+                this.moveSoundVersion = (this.moveSoundVersion + 1) % 4;
+                if (this.moveSoundVersion === 0) {
+                    this.alienMoveSound0.play();
+                } else if (this.moveSoundVersion === 1) {
+                    this.alienMoveSound1.play();
+                } else if (this.moveSoundVersion === 2) {
                     this.alienMoveSound2.play();
+                } else if (this.moveSoundVersion === 3) {
+                    this.alienMoveSound3.play();
                 }
 
                 this.counter = 0;
@@ -322,4 +325,33 @@ Aliens.prototype = {
             }
         }
     },
+
+    /**
+     * Clears all alien move sounds.
+     *
+     * Used to stop ongoing alien move sound. Used when playing a new one.
+     *
+     * @return {void}
+     */
+    clearAlienMoveSound: function() {
+        if (this.alienMoveSound0.currentTime > 0) {
+            this.alienMoveSound0.pause();
+            this.alienMoveSound0.currentTime = 0;
+        }
+
+        if (this.alienMoveSound1.currentTime > 0) {
+            this.alienMoveSound1.pause();
+            this.alienMoveSound1.currentTime = 0;
+        }
+
+        if (this.alienMoveSound2.currentTime > 0) {
+            this.alienMoveSound2.pause();
+            this.alienMoveSound2.currentTime = 0;
+        }
+
+        if (this.alienMoveSound3.currentTime > 0) {
+            this.alienMoveSound3.pause();
+            this.alienMoveSound3.currentTime = 0;
+        }
+    }
 };

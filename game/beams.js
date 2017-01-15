@@ -24,9 +24,20 @@ function Beams(cannons, aliens, cities) {
     this.cities = cities;
     this.beams = [];
     this.groundExplosions = [];
-    this.alienMissile = new Audio("sound/alien_missile.wav");
-    this.alienMissile.volume = 0.3;
-    this.groundExplosion = new Audio("sound/ground_explosion.wav");
+
+    this.playAlienMissileSound = 0;
+    this.alienMissileSound = [];
+    for (var i = 0; i < 10; i++) {
+        this.alienMissileSound[i] = new Audio("sound/alien_missile.wav");
+        this.alienMissileSound[i].volume = 0.4;
+    }
+
+    this.playExplosionSound = 0;
+    this.groundExplosionsSound = [];
+    for (var i = 0; i < 10; i++) {
+        this.groundExplosionsSound[i] = new Audio("sound/ground_explosion.wav");
+        this.groundExplosionsSound[i].volume = 0.5;
+    }
 }
 
 /**
@@ -38,6 +49,8 @@ Beams.prototype = {
     start: function() {
         this.beams = [];
         this.groundExplosions = [];
+        this.playAlienMissileSound = 0;
+        this.playExplosionSound = 0;
     },
 
     /**
@@ -72,12 +85,13 @@ Beams.prototype = {
         var beamPosX = alien.position.x + (alien.alienWidth / 2);
         var beamPosY = alien.position.y + alien.alienHeight;
         this.beams.push(new Beam(new Vector(beamPosX, beamPosY), this.cannons, this.aliens, this.cities));
-        if (this.alienMissile.currentTime > 0) {
-            this.alienMissile.pause();
-            this.alienMissile.currentTime = 0;
-        }
 
-        this.alienMissile.play();
+        this.playAlienMissileSound = (this.playAlienMissileSound + 1) % 10;
+        if (this.alienMissileSound[this.playAlienMissileSound].currentTime > 0) {
+            this.alienMissileSound[this.playAlienMissileSound].pause();
+            this.alienMissileSound[this.playAlienMissileSound].currentTime = 0;
+        }
+        this.alienMissileSound[this.playAlienMissileSound].play();
     },
 
     /**
@@ -94,11 +108,12 @@ Beams.prototype = {
             if (this.beams[i].shouldBeRemoved) {
                 if (!this.beams[i].cannonHit) {
                     this.groundExplosions.push(new GroundExplosion(new Vector(this.beams[i].position.x, this.beams[i].position.y + 3)));
-                    if (this.groundExplosion.currentTime > 0) {
-                        this.groundExplosion.pause();
-                        this.groundExplosion.currentTime = 0;
+                    this.playExplosionSound = (this.playExplosionSound + 1) % 10;
+                    if (this.groundExplosionsSound[this.playExplosionSound].currentTime > 0) {
+                        this.groundExplosionsSound[this.playExplosionSound].pause();
+                        this.groundExplosionsSound[this.playExplosionSound].currentTime = 0;
                     }
-                    this.groundExplosion.play();
+                    this.groundExplosionsSound[this.playExplosionSound].play();
                 }
 
                 this.beams.splice(i, 1);
