@@ -6,7 +6,7 @@
 <link rel="stylesheet/less" type="text/css" href="css/style.less">
 <link rel="shortcut icon" href="img/favicon.ico" media="screen">
 <script src="js/less.min.js"></script>
-<script src="../lib/modernizr.js"></script>
+<script src="js/modernizr.js"></script>
 </head>
 <body>
     <header id="header"></header>

@@ -83,7 +83,7 @@ History
 -----------------------------------
 ###History for Space Invaders
 
-v1.0 (2017-01-14)
+v1.0 (2017-01-15)
 
 * First version of Space Invaders
 
