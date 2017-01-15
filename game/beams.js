@@ -34,9 +34,9 @@ function Beams(cannons, aliens, cities) {
 
     this.playExplosionSound = 0;
     this.groundExplosionsSound = [];
-    for (var i = 0; i < 10; i++) {
-        this.groundExplosionsSound[i] = new Audio("sound/ground_explosion.wav");
-        this.groundExplosionsSound[i].volume = 0.5;
+    for (var j = 0; j < 10; j++) {
+        this.groundExplosionsSound[j] = new Audio("sound/ground_explosion.wav");
+        this.groundExplosionsSound[j].volume = 0.5;
     }
 }
 

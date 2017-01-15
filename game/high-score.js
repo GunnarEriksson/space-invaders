@@ -11,6 +11,7 @@ function HighScore(canvas, status) {
     this.canvas = canvas;
     this.status = status;
     this.isHoverOverStart       = false;
+    this.isHoverOverContinue    = false;
     this.highScoreList          = null;
     this.highScoreOffset        = 0;
     this.numItemHighScoreList   = 10;
@@ -43,6 +44,7 @@ function HighScore(canvas, status) {
 
     // Event listeners. Needed when removing event listner with binded functions.
     this.onMouseClickPlay       = this.checkPlayGame.bind(this);
+    this.onMouseClickContinue   = this.checkContinue.bind(this);
     this.onMouseClickLeftArrow  = this.checkLeftArrow.bind(this);
     this.onMouseClickRightArrow = this.checkRightArrow.bind(this);
     this.onMouseMove            = this.mouseMove.bind(this);
@@ -65,8 +67,14 @@ HighScore.prototype = {
      */
     start: function() {
         this.highScoreOffset = 0;
+        this.isHoverOverStart = false;
+        this.isHoverOverContinue = false;
+        this.isHooverOverLeftArrow = false;
+        this.isHooverOverRightArrow = false;
+
         this.getHighScoreList(this.highScoreOffset, this.numItemHighScoreList + 1);
         this.canvas.addEventListener("click", this.onMouseClickPlay, false);
+        this.canvas.addEventListener("click", this.onMouseClickContinue, false);
         this.canvas.addEventListener("click", this.onMouseClickLeftArrow, false);
         this.canvas.addEventListener("click", this.onMouseClickRightArrow, false);
         this.canvas.addEventListener("mousemove", this.onMouseMove, false);
@@ -139,6 +147,14 @@ HighScore.prototype = {
         } else {
             ct.fillStyle = "#fff";
             ct.fillText('PLAY GAME', -105, 380);
+        }
+
+        if (this.isHoverOverContinue) {
+            ct.fillStyle = "rgb(79, 255, 48)";
+            ct.fillText('CONTINUE', -99, 420);
+        } else {
+            ct.fillStyle = "#fff";
+            ct.fillText('CONTINUE', -99, 420);
         }
 
         ct.restore();
@@ -239,6 +255,24 @@ HighScore.prototype = {
     },
 
     /**
+     * Checks if the text "CONTINUE" is clicked to be redirected to the intro.
+     * Could be used if the player will not save the result to the high score
+     * list.
+     *
+     * @param  {Object} event  - the click event.
+     *
+     * @return {void}
+     */
+    checkContinue: function(event) {
+        var pos = this.getMousePos(event);
+
+        if (isIntersect(pos.x, pos.y, 1, 1, 391, 566, 117, 20)) {
+            this.removeListeners();
+            this.status.setGameStatus("intro");
+        }
+    },
+
+    /**
      * Checks if the text "PLAY GAME" is clicked to play a new game.
      *
      * @param  {Object} event  - the click event.
@@ -286,6 +320,7 @@ HighScore.prototype = {
         var pos = this.getMousePos(event);
 
         this.hooverOverPlayGame(pos.x, pos.y);
+        this.hoverOverContinue(pos.x, pos.y);
         this.hooverOverLeftArrow(pos.x, pos.y);
         this.hooverOverRightArrow(pos.x, pos.y);
     },
@@ -319,6 +354,22 @@ HighScore.prototype = {
             this.isHoverOverStart = true;
         } else {
             this.isHoverOverStart = false;
+        }
+    },
+
+    /**
+     * Checks if the mouse is hoovering over the text "CONTINUE".
+     *
+     * @param  {number} ax - the position in x led for the mouse on canvas.
+     * @param  {number} ay - the position in y led for the mouse on canvas.
+     *
+     * @return {void}
+     */
+    hoverOverContinue: function(ax, ay) {
+        if (isIntersect(ax, ay, 1, 1, 391, 566, 117, 20)) {
+            this.isHoverOverContinue = true;
+        } else {
+            this.isHoverOverContinue = false;
         }
     },
 
@@ -367,6 +418,7 @@ HighScore.prototype = {
         this.canvas.removeEventListener("mousemove", this.onMouseMove, false);
         this.canvas.removeEventListener("click", this.onMouseClickRightArrow, false);
         this.canvas.removeEventListener("click", this.onMouseClickLeftArrow, false);
+        this.canvas.removeEventListener("click", this.onMouseClickContinue, false);
         this.canvas.removeEventListener("click", this.onMouseClickPlay, false);
     }
 };

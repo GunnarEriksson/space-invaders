@@ -69,7 +69,14 @@ The following external modules are included and subject to its own license
 * Website: https://jquery.com/
 * Version v1.12.4
 * License: MIT license
-* Path included: js/jquery.js
+* Path included: `js/jquery.js`
+
+
+### Modernizr
+* Website: http://modernizr.com/
+* Version: 2.6.2
+* License: MIT license
+* Path: included in `js/modernizr.js`
 
 
 History

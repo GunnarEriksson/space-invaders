@@ -61,6 +61,9 @@ GameOver.prototype = {
      * @return {void}
      */
     init: function(score) {
+        this.isHoverOverSave = false;
+        this.isHoverOverContinue = false;
+        this.showCursor = false;
         this.delay = 60;
         this.timer = 0;
         this.textIndex = 0;
